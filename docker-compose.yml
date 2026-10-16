@@ -32,8 +32,6 @@ services:
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-campuslands_secret_2026}@db:5432/${POSTGRES_DB:-campuslands_db}
       - GEMINI_API_KEY=${GEMINI_API_KEY}
-      - CAMPUS_LAT=${CAMPUS_LAT:-7.0653}
-      - CAMPUS_LON=${CAMPUS_LON:--73.0864}
       - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL:-}
     depends_on:
       db:

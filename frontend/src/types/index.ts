@@ -40,12 +40,3 @@ export interface Incidencia {
   creada_en: string;
   resuelta_en?: string;
 }
-
-export interface ClimaAlerta {
-  ubicacion: string;
-  temperatura_c: number;
-  precipitacion_mm: number;
-  viento_kmh: number;
-  nivel_alerta: string;
-  mensaje: string;
-}

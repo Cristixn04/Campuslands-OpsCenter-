@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Espacio, Recurso, Reserva, Incidencia, ClimaAlerta } from '../types';
+import { Espacio, Recurso, Reserva, Incidencia } from '../types';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
@@ -45,8 +45,8 @@ export const resolveIncident = async (id: number): Promise<Incidencia> => {
   return data;
 };
 
-export const getWeather = async (): Promise<ClimaAlerta> => {
-  const { data } = await api.get('/external/weather');
+export const getQrUrl = async (tipo: string, id_item: string): Promise<{ payload: string; qr_url: string }> => {
+  const { data } = await api.get('/external/qr-url', { params: { tipo, id_item } });
   return data;
 };
 

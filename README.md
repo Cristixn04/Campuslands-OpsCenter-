@@ -35,7 +35,7 @@ Campuslands enfrenta retos diarios en disponibilidad de espacios (12 aulas y cub
 | **Backend API** | FastAPI + SQLAlchemy (Python 3.12) | Alto rendimiento, Swagger/OpenAPI autogenerado en `/docs`, validación Pydantic. |
 | **Inteligencia Artificial** | Google Gemini SDK (`gemini-3.8-flash`) | Structured Outputs con esquema JSON para triaje determinista sin alucinaciones. |
 | **Frontend** | React 19 + TypeScript + Tailwind CSS | Interfaz ultra responsiva, feedback visual inmediato y badges de estado. |
-| **APIs Externas** | Open-Meteo API & QR Server | Alertas meteorológicas en tiempo real para el campus y pases digitales QR. |
+| **APIs Externas** | QR Server API & Discord Webhooks | Generación instantánea de pases de acceso QR y alertas críticas en tiempo real. |
 
 ---
 
@@ -46,7 +46,7 @@ Campuslands enfrenta retos diarios en disponibilidad de espacios (12 aulas y cub
   1. La IA evalúa la descripción con respecto al mapa oficial del campus.
   2. Genera un objeto estructurado (`categoria`, `severidad`, `espacio_afectado`, `bloquear_espacio`, `accion_sugerida`).
   3. Si la severidad es **CRÍTICA** o **ALTA**, el backend **invalida y bloquea automáticamente** el aula (`Apolo`), impidiendo que nuevos usuarios la reserven hasta que mantenimiento la resuelva.
-- **Sin Hardcoding:** La llamada se realiza a la API de Gemini usando variables de entorno seguras (`GEMINI_API_KEY`). Cuenta además con una heurística de contingencia para que el sistema nunca caiga en caso de falla de red.
+- **Sin Hardcoding:** La llamada se realiza a la API de Gemini usando variables de entorno seguras (`GEMINI_API_KEY`). Cuenta además con una heurística de contingencia para que el sistema nunca caiga en caso de falla de red o cuota.
 
 ---
 
@@ -104,7 +104,7 @@ GEMINI_API_KEY=tu_api_key_aqui
 
 ### 3. Levantar la plataforma con Docker Compose
 ```bash
-docker compose up --build
+docker compose up --build -d
 ```
 
 ### 4. Acceso a los Servicios
@@ -116,7 +116,7 @@ docker compose up --build
 
 ## 🌿 Flujo de Trabajo en Git (Cero Conflictos)
 
-1. `main`: Rama protegida y estable.
+1. `main`: Rama protegida y base del proyecto.
 2. `feat/frontend`: Cristian trabaja exclusivamente dentro de `/frontend`.
-3. `feat/backend`: Samuel trabaja exclusivamente dentro de `/backend`.
+3. `feat/backend`: Samuel trabaja exclusivamente dentro de `/backend` (ver [SAMUEL_GUIA_BACKEND.md](./SAMUEL_GUIA_BACKEND.md)).
 4. Los contratos de API compartidos están definidos en `frontend/src/types/index.ts` y documentados en Swagger `/docs`.

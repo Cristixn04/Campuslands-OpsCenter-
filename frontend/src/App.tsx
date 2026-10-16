@@ -3,16 +3,16 @@ import {
   Building2, 
   Laptop, 
   Calendar, 
-  CloudSun, 
   CheckCircle2, 
   XCircle, 
   Sparkles, 
   RefreshCw, 
   PlusCircle, 
   ShieldAlert, 
-  ArrowRight 
+  ArrowRight,
+  QrCode
 } from 'lucide-react';
-import { Espacio, Recurso, Incidencia, Reserva, ClimaAlerta } from './types';
+import { Espacio, Recurso, Incidencia, Reserva } from './types';
 import { 
   getSpaces, 
   getResources, 
@@ -20,8 +20,7 @@ import {
   getReservations, 
   reportIncident, 
   createReservation, 
-  resolveIncident, 
-  getWeather 
+  resolveIncident 
 } from './api/client';
 
 export default function App() {
@@ -31,7 +30,6 @@ export default function App() {
   const [resources, setResources] = useState<Recurso[]>([]);
   const [incidents, setIncidents] = useState<Incidencia[]>([]);
   const [reservations, setReservations] = useState<Reserva[]>([]);
-  const [weather, setWeather] = useState<ClimaAlerta | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [actionLoading, setActionLoading] = useState<boolean>(false);
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
@@ -48,19 +46,17 @@ export default function App() {
   const loadAllData = async () => {
     try {
       setLoading(true);
-      const [spData, resData, incData, revData, wData] = await Promise.allSettled([
+      const [spData, resData, incData, revData] = await Promise.allSettled([
         getSpaces(),
         getResources(),
         getIncidents(),
-        getReservations(),
-        getWeather()
+        getReservations()
       ]);
 
       if (spData.status === 'fulfilled') setSpaces(spData.value);
       if (resData.status === 'fulfilled') setResources(resData.value);
       if (incData.status === 'fulfilled') setIncidents(incData.value);
       if (revData.status === 'fulfilled') setReservations(revData.value);
-      if (wData.status === 'fulfilled') setWeather(wData.value);
     } catch (err) {
       console.error('Error cargando datos:', err);
     } finally {
@@ -142,6 +138,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+      {/* Header Superior */}
       <header className="border-b border-slate-800 bg-slate-900/60 backdrop-blur sticky top-0 z-50 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="bg-blue-600 p-2.5 rounded-xl shadow-lg shadow-blue-500/20">
@@ -158,33 +155,24 @@ export default function App() {
           </div>
         </div>
 
-        {weather && (
-          <div className="flex items-center gap-3 bg-slate-800/80 border border-slate-700/60 rounded-xl px-4 py-2 text-xs">
-            <CloudSun className="w-5 h-5 text-amber-400" />
-            <div>
-              <div className="font-semibold text-slate-200">
-                {weather.ubicacion}: {weather.temperatura_c}°C
-              </div>
-              <div className="text-slate-400">{weather.mensaje}</div>
-            </div>
-            {weather.nivel_alerta !== 'NORMAL' && (
-              <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded text-[10px] font-bold">
-                {weather.nivel_alerta}
-              </span>
-            )}
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 text-xs bg-slate-800/80 border border-slate-700/60 rounded-xl px-3 py-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span className="text-slate-300 font-mono">PostgreSQL + Gemini 3.8 Flash Online</span>
           </div>
-        )}
 
-        <button 
-          onClick={loadAllData} 
-          disabled={loading}
-          className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-2 rounded-lg text-xs font-medium transition"
-        >
-          <RefreshCw className={'w-3.5 h-3.5 ' + (loading ? 'animate-spin' : '')} />
-          Sincronizar
-        </button>
+          <button 
+            onClick={loadAllData} 
+            disabled={loading}
+            className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-2 rounded-lg text-xs font-medium transition"
+          >
+            <RefreshCw className={'w-3.5 h-3.5 ' + (loading ? 'animate-spin' : '')} />
+            Sincronizar
+          </button>
+        </div>
       </header>
 
+      {/* Banner de Feedback Global */}
       {feedback && (
         <div className={'mx-6 mt-4 p-4 rounded-xl border flex items-center justify-between gap-3 text-sm ' + (
           feedback.type === 'success' 
@@ -199,6 +187,7 @@ export default function App() {
         </div>
       )}
 
+      {/* Navegacion de Pestanas */}
       <div className="px-6 pt-4 border-b border-slate-800 flex gap-2">
         <button
           onClick={() => setActiveTab('spaces')}
@@ -249,6 +238,7 @@ export default function App() {
         </button>
       </div>
 
+      {/* Contenido Principal */}
       <main className="flex-1 p-6 max-w-7xl w-full mx-auto">
         {activeTab === 'spaces' && (
           <div className="space-y-6">
@@ -445,9 +435,20 @@ export default function App() {
                           </div>
                         </div>
 
-                        <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2.5 py-1 rounded font-semibold text-[11px]">
-                          {res.estado}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <a 
+                            href={'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=CAMPUSLANDS-RESERVA:' + res.id}
+                            target="_blank" 
+                            rel="noreferrer"
+                            className="flex items-center gap-1 bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded text-[11px] font-medium transition border border-slate-700"
+                          >
+                            <QrCode className="w-3.5 h-3.5 text-blue-400" />
+                            Pase QR
+                          </a>
+                          <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2.5 py-1 rounded font-semibold text-[11px]">
+                            {res.estado}
+                          </span>
+                        </div>
                       </div>
                     );
                   })}
@@ -606,6 +607,7 @@ export default function App() {
         )}
       </main>
 
+      {/* Footer */}
       <footer className="border-t border-slate-800/80 px-6 py-3 text-center text-xs text-slate-500">
         Campuslands Hackaton 2026 - Desarrollado por Cristian (Frontend) y Samuel (Backend)
       </footer>
