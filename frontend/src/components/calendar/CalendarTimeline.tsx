@@ -13,7 +13,8 @@ import {
   CalendarDays,
   CheckCircle2,
   Layers,
-  Sparkles
+  Sparkles,
+  Building2
 } from 'lucide-react';
 import { Reserva, Espacio } from '../../types';
 import { generateGoogleCalendarUrl, downloadIcsFile } from '../../utils/googleCalendar';
@@ -43,6 +44,7 @@ export const CalendarTimeline: React.FC<CalendarTimelineProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [showAllDates, setShowAllDates] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<'agenda' | 'timeline'>('agenda');
+  const [onlyOccupiedInTimeline, setOnlyOccupiedInTimeline] = useState<boolean>(false);
 
   // Mapeo rápido de ID de espacio a Objeto Espacio
   const spacesMap = useMemo(() => {
@@ -117,6 +119,27 @@ export const CalendarTimeline: React.FC<CalendarTimelineProps> = ({
     setSelectedDate(getTodayString());
   };
 
+  // Etiqueta dinámica para el botón del navegador (< [Hoy / Mañana / Ayer / 17 oct] >)
+  const getNavDayLabel = () => {
+    if (showAllDates) return 'Todas';
+    const today = getTodayString();
+    if (selectedDate === today) return 'Hoy';
+
+    const [todayY, todayM, todayD] = today.split('-').map(Number);
+    const [selY, selM, selD] = selectedDate.split('-').map(Number);
+    const todayDate = new Date(todayY, todayM - 1, todayD);
+    const selDate = new Date(selY, selM - 1, selD);
+
+    const diffDays = Math.round((selDate.getTime() - todayDate.getTime()) / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 1) return 'Mañana';
+    if (diffDays === -1) return 'Ayer';
+
+    const diaNum = selDate.getDate();
+    const mes = selDate.toLocaleDateString('es-ES', { month: 'short' }).replace('.', '');
+    return `${diaNum} ${mes}`;
+  };
+
   // Obtener fechas únicas con reservas para navegación rápida
   const datesWithReservations = useMemo(() => {
     const datesCount = new Map<string, number>();
@@ -182,8 +205,21 @@ export const CalendarTimeline: React.FC<CalendarTimelineProps> = ({
   const TIMELINE_END = 21;
   const TIMELINE_HOURS_COUNT = TIMELINE_END - TIMELINE_START;
   const timelineHours = useMemo(() => {
-    return Array.from({ length: TIMELINE_HOURS_COUNT + 1 }, (_, i) => TIMELINE_START + i);
+    return Array.from({ length: TIMELINE_HOURS_COUNT }, (_, i) => TIMELINE_START + i);
   }, [TIMELINE_HOURS_COUNT]);
+
+  const handleSyncGoogleCalendar = (reserva: Reserva) => {
+    const espacio = spacesMap.get(reserva.espacio_id);
+    const espacioNombre = espacio?.nombre || reserva.espacio_id;
+    const url = generateGoogleCalendarUrl(reserva, espacioNombre);
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleDownloadIcs = (reserva: Reserva) => {
+    const espacio = spacesMap.get(reserva.espacio_id);
+    const espacioNombre = espacio?.nombre || reserva.espacio_id;
+    downloadIcsFile(reserva, espacioNombre);
+  };
 
   // Cálculo de posicionamiento en el timeline
   const calculateTimelinePosition = (startStr: string, endStr: string) => {
@@ -211,6 +247,25 @@ export const CalendarTimeline: React.FC<CalendarTimelineProps> = ({
       isVisible: true
     };
   };
+
+  // Espacios a mostrar en el timeline (Swimlanes por sala)
+  const timelineSpaces = useMemo(() => {
+    if (filterSpaceId !== 'all') {
+      return espacios.filter(e => e.id === filterSpaceId);
+    }
+    if (onlyOccupiedInTimeline) {
+      const occupiedIds = new Set(filteredReservas.map(r => r.espacio_id));
+      const occupied = espacios.filter(e => occupiedIds.has(e.id));
+      return occupied.length > 0 ? occupied : espacios;
+    }
+    return espacios;
+  }, [espacios, filterSpaceId, onlyOccupiedInTimeline, filteredReservas]);
+
+  // Marcador de hora actual en vivo si la fecha seleccionada es hoy
+  const isSelectedToday = selectedDate === getTodayString() && !showAllDates;
+  const now = new Date();
+  const currentHourFloat = now.getHours() + now.getMinutes() / 60;
+  const currentHourPercent = ((currentHourFloat - TIMELINE_START) / TIMELINE_HOURS_COUNT) * 100;
 
   // Badge de Estado con estilo cósmico
   const renderEstadoBadge = (estado: string) => {
@@ -298,11 +353,11 @@ export const CalendarTimeline: React.FC<CalendarTimelineProps> = ({
         <div className="mt-6 pt-5 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
           {/* Navegador de Fecha */}
           <div className="flex items-center flex-wrap gap-2">
-            <div className="flex items-center bg-[#081226]/90 backdrop-blur-md rounded-xl border border-white/20 p-1 shadow-inner">
+            <div className="flex items-center bg-[#030712] backdrop-blur-md rounded-xl border border-white/20 p-1 shadow-inner">
               <button
                 type="button"
                 onClick={() => handleNavigateDay(-1)}
-                className="p-1.5 rounded-lg hover:bg-white/10 text-white hover:text-campus-teal transition"
+                className="p-1.5 rounded-lg hover:bg-white/10 text-white hover:text-campus-teal transition active:scale-95"
                 title="Día anterior"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -311,24 +366,37 @@ export const CalendarTimeline: React.FC<CalendarTimelineProps> = ({
               <button
                 type="button"
                 onClick={handleGoToToday}
-                className={`px-3.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+                title={selectedDate !== getTodayString() ? 'Clic para volver a Hoy' : 'Fecha actual'}
+                className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all min-w-[65px] text-center capitalize ${
                   selectedDate === getTodayString() && !showAllDates
                     ? 'bg-gradient-to-r from-campus-teal to-campus-blue text-white shadow-md shadow-campus-teal/20 font-bold'
-                    : 'text-white hover:text-campus-teal hover:bg-white/10'
+                    : 'bg-white/10 text-campus-teal hover:bg-campus-teal/20 hover:text-white border border-campus-teal/30 font-bold'
                 }`}
               >
-                Hoy
+                {getNavDayLabel()}
               </button>
 
               <button
                 type="button"
                 onClick={() => handleNavigateDay(1)}
-                className="p-1.5 rounded-lg hover:bg-white/10 text-white hover:text-campus-teal transition"
+                className="p-1.5 rounded-lg hover:bg-white/10 text-white hover:text-campus-teal transition active:scale-95"
                 title="Día siguiente"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
+
+            {/* Acceso directo para volver a Hoy */}
+            {selectedDate !== getTodayString() && !showAllDates && (
+              <button
+                type="button"
+                onClick={handleGoToToday}
+                className="px-2.5 py-1.5 rounded-xl text-xs font-mono text-campus-teal bg-campus-teal/10 hover:bg-campus-teal/20 border border-campus-teal/30 transition flex items-center gap-1 shadow-sm font-semibold active:scale-95"
+                title="Volver a la fecha de hoy"
+              >
+                ← Ir a Hoy
+              </button>
+            )}
 
             {/* Input Date Picker nativo con diseño oscuro */}
             <div className="relative flex items-center">
@@ -470,73 +538,206 @@ export const CalendarTimeline: React.FC<CalendarTimelineProps> = ({
         </div>
       </div>
 
-      {/* VISTA 1: TIMELINE DIARIO (Grilla Horaria 07:00 a 21:00) */}
+      {/* VISTA 1: TIMELINE DIARIO HORARIO (Grilla Horaria 07:00 a 21:00) */}
       {viewMode === 'timeline' && (
-        <div className="glass-panel rounded-2xl p-6 border border-white/10 space-y-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-campus-purple" />
-              <h3 className="text-sm font-bold text-white uppercase tracking-wider font-mono">
-                Línea de Tiempo Horaria
-              </h3>
+        <div className="glass-morphism-card p-6 border border-white/10 space-y-6 shadow-2xl relative overflow-hidden">
+          {/* Header del Timeline */}
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-campus-purple/20 border border-campus-purple/40 flex items-center justify-center text-purple-300 shadow-md">
+                <Clock className="w-5 h-5 text-campus-purple" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white uppercase tracking-wider font-mono flex items-center gap-2">
+                  Línea de Tiempo Horaria
+                  <span className="text-[10px] font-mono normal-case px-2.5 py-0.5 rounded-full bg-campus-teal/15 text-campus-teal border border-campus-teal/30 font-semibold">
+                    07:00 — 21:00
+                  </span>
+                </h3>
+                <p className="text-xs text-slate-400 mt-0.5 font-sans">
+                  Cronograma horizontal de disponibilidad y aforos por sala en Zenith Tower (Piso 6)
+                </p>
+              </div>
             </div>
-            <span className="text-xs font-mono text-slate-400">
-              {showAllDates ? 'Todas las reservas distribuidas por hora' : formatDateSpanish(selectedDate)}
-            </span>
+
+            <div className="flex items-center gap-2.5 flex-wrap">
+              {/* Filtro rápido: Todas vs Solo Ocupadas */}
+              <button
+                type="button"
+                onClick={() => setOnlyOccupiedInTimeline(!onlyOccupiedInTimeline)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-mono font-medium border transition ${
+                  onlyOccupiedInTimeline
+                    ? 'bg-campus-cyan/20 border-campus-cyan text-campus-cyan font-semibold'
+                    : 'bg-white/5 border-white/10 text-slate-400 hover:text-white hover:bg-white/10'
+                }`}
+              >
+                {onlyOccupiedInTimeline ? 'Mostrando sólo ocupadas' : `Ver todas las salas (${espacios.length})`}
+              </button>
+
+              <span className="text-xs font-mono text-slate-300 bg-white/5 px-3 py-1.5 rounded-xl border border-white/10 font-semibold">
+                📅 {showAllDates ? 'Todas las reservas' : formatDateSpanish(selectedDate)}
+              </span>
+            </div>
           </div>
 
-          {/* Regla Horaria Superior */}
-          <div className="relative bg-campus-deep/80 rounded-xl border border-white/5 p-4 overflow-x-auto">
-            <div className="min-w-[700px]">
-              {/* Marcas de Tiempo Horarias */}
-              <div className="grid grid-cols-14 border-b border-white/10 pb-2 mb-4 text-[10px] font-mono text-slate-400 text-center">
-                {timelineHours.map(hour => (
-                  <div key={hour} className="border-l border-white/5 first:border-0 pl-1">
-                    {String(hour).padStart(2, '0')}:00
+          {/* Tablero Horario con Rieles Horizontales */}
+          <div className="relative bg-[#02050e]/95 rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
+            <div className="overflow-x-auto">
+              <div className="min-w-[980px]">
+                {/* Cabecera de Horas (07:00 a 21:00) */}
+                <div
+                  className="grid border-b border-white/15 bg-[#060c1a]"
+                  style={{ gridTemplateColumns: '190px repeat(14, minmax(0, 1fr))' }}
+                >
+                  {/* Columna Izquierda: Sala */}
+                  <div className="p-3 text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300 border-r border-white/10 flex items-center gap-2">
+                    <Building2 className="w-3.5 h-3.5 text-campus-teal" />
+                    <span>Sala / Espacio</span>
                   </div>
-                ))}
-              </div>
 
-              {/* Rieles de Espacios */}
-              {filteredReservas.length === 0 ? (
-                <div className="py-12 text-center text-slate-400 text-xs font-sans">
-                  No hay reservas programadas en este intervalo horario.
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {filteredReservas.map(reserva => {
-                    const pos = calculateTimelinePosition(reserva.fecha_inicio, reserva.fecha_fin);
-                    const espacio = spacesMap.get(reserva.espacio_id);
-                    const espacioNombre = espacio?.nombre || reserva.espacio_id;
-                    const timeInfo = formatTimeRange(reserva.fecha_inicio, reserva.fecha_fin);
-
+                  {/* 14 Columnas Horarias */}
+                  {timelineHours.map(hour => {
                     return (
                       <div
-                        key={reserva.id}
-                        className="relative h-12 bg-white/5 rounded-xl border border-white/5 flex items-center px-2 group hover:bg-white/10 transition"
+                        key={hour}
+                        className="py-2.5 px-1 text-center border-l border-white/10 first:border-l-0 text-[10.5px] font-mono text-slate-300 font-semibold bg-white/[0.01]"
                       >
-                        {/* Bloque en la línea de tiempo */}
-                        {pos.isVisible && (
-                          <div
-                            style={{ left: pos.left, width: pos.width }}
-                            className="absolute h-9 rounded-lg bg-gradient-to-r from-campus-teal/30 via-campus-blue/30 to-campus-purple/30 border border-campus-teal/50 hover:border-campus-teal p-1.5 flex items-center justify-between gap-1 overflow-hidden transition-all shadow-md group-hover:shadow-campus-teal/20"
-                            title={`${espacioNombre}: ${reserva.motivo} (${timeInfo.timeText})`}
-                          >
-                            <div className="truncate text-[11px] font-medium text-white flex items-center gap-1">
-                              <span className="w-1.5 h-1.5 rounded-full bg-campus-teal shrink-0" />
-                              <span className="font-bold text-campus-teal">{espacioNombre}:</span>
-                              <span className="text-slate-200 truncate">{reserva.motivo || 'Reserva'}</span>
-                            </div>
-                            <span className="text-[10px] font-mono text-campus-cyan shrink-0 hidden sm:inline">
-                              {timeInfo.duration}
-                            </span>
-                          </div>
-                        )}
+                        {String(hour).padStart(2, '0')}:00
                       </div>
                     );
                   })}
                 </div>
-              )}
+
+                {/* Filas por Sala (Swimlanes) */}
+                <div className="divide-y divide-white/5">
+                  {timelineSpaces.length === 0 ? (
+                    <div className="py-12 text-center text-slate-400 text-xs font-sans">
+                      No hay espacios disponibles para mostrar con los filtros activos.
+                    </div>
+                  ) : (
+                    timelineSpaces.map(space => {
+                      const spaceReservas = filteredReservas.filter(r => r.espacio_id === space.id);
+                      const isFree = spaceReservas.length === 0;
+
+                      return (
+                        <div
+                          key={space.id}
+                          className="grid hover:bg-white/[0.02] transition-colors group"
+                          style={{ gridTemplateColumns: '190px repeat(14, minmax(0, 1fr))' }}
+                        >
+                          {/* Columna Izquierda: Información de la Sala */}
+                          <div className="p-3 border-r border-white/10 flex flex-col justify-center bg-[#060c1a]/60 group-hover:bg-[#060c1a]/90 transition">
+                            <div className="flex items-center justify-between gap-1.5">
+                              <span className="font-bold text-xs text-white truncate group-hover:text-campus-teal transition-colors" title={space.nombre}>
+                                {space.nombre}
+                              </span>
+                              <span className="text-[9.5px] font-mono px-1.5 py-0.5 rounded bg-white/10 text-slate-200 font-bold shrink-0">
+                                {space.capacidad}p
+                              </span>
+                            </div>
+                            <span className="text-[9.5px] font-mono text-slate-400 capitalize truncate mt-0.5">
+                              {space.tipo.replace('_', ' ')}
+                            </span>
+                          </div>
+
+                          {/* Track Horario con Rejilla de Fondo */}
+                          <div
+                            className="relative h-14 w-full"
+                            style={{ gridColumn: '2 / span 14' }}
+                          >
+                            {/* Rejilla de fondo de 14 horas */}
+                            <div
+                              className="absolute inset-0 grid pointer-events-none"
+                              style={{ gridTemplateColumns: 'repeat(14, minmax(0, 1fr))' }}
+                            >
+                              {Array.from({ length: 14 }).map((_, i) => (
+                                <div key={i} className="border-l border-white/5 first:border-l-0 h-full relative">
+                                  <div className="absolute left-1/2 top-0 bottom-0 border-l border-white/[0.02]" />
+                                </div>
+                              ))}
+                            </div>
+
+                            {/* Marcador Láser de Hora Actual si es Hoy */}
+                            {isSelectedToday && currentHourPercent >= 0 && currentHourPercent <= 100 && (
+                              <div
+                                style={{ left: `${currentHourPercent}%` }}
+                                className="absolute top-0 bottom-0 w-0.5 bg-campus-teal shadow-[0_0_8px_rgba(84,198,170,0.9)] z-20 pointer-events-none"
+                              >
+                                <span className="absolute -top-1 -translate-x-1/2 bg-campus-teal text-black text-[8px] font-mono px-1 rounded font-extrabold shadow">
+                                  AHORA
+                                </span>
+                              </div>
+                            )}
+
+                            {/* Bloques de Reserva */}
+                            {spaceReservas.map(reserva => {
+                              const pos = calculateTimelinePosition(reserva.fecha_inicio, reserva.fecha_fin);
+                              const timeInfo = formatTimeRange(reserva.fecha_inicio, reserva.fecha_fin);
+                              if (!pos.isVisible) return null;
+
+                              return (
+                                <div
+                                  key={reserva.id}
+                                  style={{ left: pos.left, width: pos.width }}
+                                  className="absolute top-1.5 bottom-1.5 rounded-xl bg-gradient-to-r from-campus-teal/30 via-campus-blue/25 to-campus-purple/30 border border-campus-teal/70 hover:border-campus-teal shadow-lg shadow-black/40 hover:shadow-campus-teal/30 px-2.5 py-1 flex items-center justify-between gap-2 overflow-hidden z-10 transition-all group/block backdrop-blur-md cursor-pointer"
+                                  title={`${reserva.motivo} (${timeInfo.timeText}) - Solicitado por ${reserva.solicitante}`}
+                                >
+                                  <div className="min-w-0 flex-1 flex items-center gap-1.5">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-campus-teal shadow-[0_0_6px_rgba(84,198,170,0.9)] shrink-0" />
+                                    <div className="min-w-0">
+                                      <p className="text-[11px] font-bold text-white truncate leading-tight">
+                                        {reserva.motivo || 'Reserva Activa'}
+                                      </p>
+                                      <p className="text-[9.5px] font-mono text-campus-cyan truncate leading-tight">
+                                        {timeInfo.timeText} • {reserva.solicitante}
+                                      </p>
+                                    </div>
+                                  </div>
+
+                                  {/* Botones de Acción en el Bloque */}
+                                  <div className="flex items-center gap-1 opacity-0 group-hover/block:opacity-100 transition-opacity shrink-0 bg-black/70 p-0.5 rounded-lg border border-white/10">
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleSyncGoogleCalendar(reserva);
+                                      }}
+                                      className="p-1 rounded hover:bg-campus-teal hover:text-black text-slate-200 transition"
+                                      title="Sincronizar en Google Calendar"
+                                    >
+                                      <ExternalLink className="w-3 h-3" />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDownloadIcs(reserva);
+                                      }}
+                                      className="p-1 rounded hover:bg-campus-cyan hover:text-black text-slate-200 transition"
+                                      title="Descargar archivo .ICS"
+                                    >
+                                      <Download className="w-3 h-3" />
+                                    </button>
+                                  </div>
+                                </div>
+                              );
+                            })}
+
+                            {/* Placeholder si la sala está libre */}
+                            {isFree && (
+                              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                <span className="text-[10px] font-mono text-emerald-400/80 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                                  ✓ Disponible 07:00 — 21:00
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>

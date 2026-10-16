@@ -12,9 +12,9 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ currentRole, onRoleChange, onSync, isLoading }) => {
   return (
-    <header className="border-b border-white/10 bg-[#010206]/85 backdrop-blur-2xl sticky top-0 z-50 shadow-2xl">
+    <header className="border-b border-white/10 bg-[#060c1a]/95 backdrop-blur-2xl sticky top-0 z-50 shadow-2xl">
       {/* Ticker estilo Terminal Campuslands */}
-      <div className="border-b border-white/5 bg-black/60 py-1.5 px-6 overflow-hidden select-none">
+      <div className="border-b border-white/5 bg-[#02050e]/95 py-1.5 px-6 overflow-hidden select-none">
         <div className="max-w-7xl mx-auto flex items-center justify-between text-[11px] font-mono tracking-[0.2em] text-slate-400">
           <div className="flex items-center gap-2">
             <span className="relative flex h-2 w-2">
@@ -74,7 +74,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentRole, onRoleChange, onSyn
 
         {/* Switcher de Roles (Admin vs Camper/Cliente) + Botón Sincronizar */}
         <div className="flex items-center gap-3">
-          <div className="bg-[#081226] border border-white/10 p-1 rounded-xl flex items-center gap-1 shadow-inner">
+          <div className="bg-[#030712] border border-white/15 p-1 rounded-xl flex items-center gap-1 shadow-inner">
             <button
               onClick={() => onRoleChange('client')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
@@ -104,7 +104,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentRole, onRoleChange, onSyn
           <button
             onClick={onSync}
             disabled={isLoading}
-            className="p-2 rounded-xl bg-[#081226] hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white transition shadow-sm active:scale-95"
+            className="p-2 rounded-xl bg-[#030712] hover:bg-[#0c1830] border border-white/15 text-slate-300 hover:text-white transition shadow-sm active:scale-95"
             title="Sincronizar datos del campus"
           >
             <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-campus-teal' : ''}`} />

@@ -57,8 +57,8 @@ export const SpaceGrid: React.FC<SpaceGridProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Barra de Filtros y Búsqueda */}
-      <div className="crystal-lens-card p-4 flex flex-wrap items-center justify-between gap-4">
+      {/* Barra de Filtros y Búsqueda con fondo oscuro y alto contraste */}
+      <div className="glass-morphism-card p-4 flex flex-wrap items-center justify-between gap-4 border border-white/10 !bg-[#060c1a]/95 backdrop-blur-2xl shadow-xl">
         {/* Pills de Filtrado */}
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs text-slate-300 font-mono flex items-center gap-1.5 mr-1 font-semibold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
@@ -106,7 +106,7 @@ export const SpaceGrid: React.FC<SpaceGridProps> = ({
               placeholder="Buscar sala o piso..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#0c1830] border border-white/20 rounded-xl pl-9 pr-3 py-1.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-campus-teal focus:ring-1 focus:ring-campus-teal/30 transition shadow-inner"
+              className="w-full bg-[#030611] border border-white/20 rounded-xl pl-9 pr-3 py-1.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-campus-teal focus:ring-1 focus:ring-campus-teal/30 transition shadow-inner font-sans"
             />
           </div>
 
