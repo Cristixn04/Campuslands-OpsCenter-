@@ -1,3 +1,4 @@
+import uuid
 import pytest
 from datetime import datetime, timedelta
 from fastapi.testclient import TestClient
@@ -7,6 +8,9 @@ from app.db.session import SessionLocal
 from app.db.models import Espacio, Recurso, Reserva, Incidencia
 
 client = TestClient(app)
+
+SEED_ESPACIO_IDS = {f"esp-{i:02d}" for i in range(1, 13)}
+SEED_RECURSO_IDS = {f"rec-{i:02d}" for i in range(1, 7)}
 
 @pytest.fixture(autouse=True)
 def reset_rules_and_data():
@@ -19,8 +23,17 @@ def reset_rules_and_data():
     try:
         db.query(Reserva).delete()
         db.query(Incidencia).delete()
-        db.query(Espacio).update({"estado": "disponible"})
-        db.query(Recurso).update({"estado": "disponible"})
+        # Eliminar registros creados dinámicamente por tests anteriores
+        for e in db.query(Espacio).all():
+            if e.id not in SEED_ESPACIO_IDS:
+                db.delete(e)
+            else:
+                e.estado = "disponible"
+        for r in db.query(Recurso).all():
+            if r.id not in SEED_RECURSO_IDS:
+                db.delete(r)
+            else:
+                r.estado = "disponible"
         db.commit()
     finally:
         db.close()
@@ -346,3 +359,148 @@ def test_persistencia_dataset_oficial_postgresql():
     assert resources_res.status_code == 200
     resources = resources_res.json()
     assert len(resources) >= 6
+
+
+# ---------------------------------------------------------------------------
+# 13. Espacios: creación con ID automático y prefijo esp-
+# ---------------------------------------------------------------------------
+def test_espacio_creacion_id_automatico_prefijo_esp():
+    nombre_dinamico = f"Sala Innovacion {uuid.uuid4().hex[:6]}"
+    payload = {
+        "nombre": nombre_dinamico,
+        "tipo": "laboratorio",
+        "capacidad": 15,
+        "ubicacion": "Piso 5 - Ala Este",
+        "estado": "disponible"
+    }
+    res = client.post("/api/spaces", json=payload)
+    assert res.status_code == 201
+    data = res.json()
+    assert data["id"].startswith("esp-")
+    assert data["nombre"] == payload["nombre"]
+    assert data["capacidad"] == 15
+    assert data["estado"] == "disponible"
+
+
+# ---------------------------------------------------------------------------
+# 14. Espacios: rechazo de ID duplicado y nombre duplicado con HTTP 400
+# ---------------------------------------------------------------------------
+def test_espacio_rechazo_duplicados_id_y_nombre_400():
+    # ID duplicado con espacio existente esp-01 (Auditorio)
+    res_id = client.post("/api/spaces", json={
+        "id": "esp-01",
+        "nombre": "Auditorio Clonado",
+        "tipo": "auditorio",
+        "capacidad": 50,
+        "ubicacion": "Piso 1"
+    })
+    assert res_id.status_code == 400
+    assert "Ya existe un espacio con el ID" in res_id.json()["detail"]
+
+    # Nombre duplicado con espacio existente "Auditorio"
+    res_nom = client.post("/api/spaces", json={
+        "nombre": "Auditorio",
+        "tipo": "auditorio",
+        "capacidad": 80,
+        "ubicacion": "Piso 2"
+    })
+    assert res_nom.status_code == 400
+    assert "Ya existe un espacio con el nombre" in res_nom.json()["detail"]
+
+
+# ---------------------------------------------------------------------------
+# 15. Espacios: validación de estado inválido y PATCH status
+# ---------------------------------------------------------------------------
+def test_espacio_validacion_estado_invalido_y_patch_status():
+    # Creación con estado inválido
+    res_inv = client.post("/api/spaces", json={
+        "nombre": f"Sala Test Estado {uuid.uuid4().hex[:4]}",
+        "tipo": "aula",
+        "capacidad": 20,
+        "ubicacion": "Piso 3",
+        "estado": "destruido"
+    })
+    assert res_inv.status_code == 400
+    assert "inválido" in res_inv.json()["detail"]
+
+    # PATCH a estado válido
+    patch_res = client.patch("/api/spaces/esp-01/status", json={"estado": "ocupado"})
+    assert patch_res.status_code == 200
+    assert patch_res.json()["estado"] == "ocupado"
+
+    # PATCH a estado inválido
+    patch_inv = client.patch("/api/spaces/esp-01/status", json={"estado": "fuera_de_servicio"})
+    assert patch_inv.status_code == 400
+    assert "inválido" in patch_inv.json()["detail"]
+
+
+# ---------------------------------------------------------------------------
+# 16. Recursos: creación con ID automático y prefijo rec-
+# ---------------------------------------------------------------------------
+def test_recurso_creacion_id_automatico_prefijo_rec():
+    serial_dinamico = f"MON-UW-{uuid.uuid4().hex[:8]}"
+    payload = {
+        "nombre": "Monitor Curvo Ultrawide 34",
+        "categoria": "computo",
+        "serial": serial_dinamico,
+        "ubicacion_actual": "Laboratorio IA"
+    }
+    res = client.post("/api/resources", json=payload)
+    assert res.status_code == 201
+    data = res.json()
+    assert data["id"].startswith("rec-")
+    assert data["serial"] == serial_dinamico
+    assert data["estado"] == "disponible"
+
+
+# ---------------------------------------------------------------------------
+# 17. Recursos: rechazo de ID duplicado y serial duplicado con HTTP 400
+# ---------------------------------------------------------------------------
+def test_recurso_rechazo_duplicados_id_y_serial_400():
+    # ID duplicado con recurso existente rec-01
+    res_id = client.post("/api/resources", json={
+        "id": "rec-01",
+        "nombre": "Copia Recurso 1",
+        "categoria": "computo",
+        "serial": "SERIAL-UNICO-9999",
+        "ubicacion_actual": "Almacén"
+    })
+    assert res_id.status_code == 400
+    assert "Ya existe un recurso con el ID" in res_id.json()["detail"]
+
+    # Serial duplicado con rec-01 ("EPS-4K-9012")
+    res_serial = client.post("/api/resources", json={
+        "nombre": "Otro Proyector",
+        "categoria": "audiovisual",
+        "serial": "EPS-4K-9012",
+        "ubicacion_actual": "Apolo"
+    })
+    assert res_serial.status_code == 400
+    assert "Ya existe un recurso con el serial" in res_serial.json()["detail"]
+
+
+# ---------------------------------------------------------------------------
+# 18. Recursos: validación de estado inválido y PATCH status
+# ---------------------------------------------------------------------------
+def test_recurso_validacion_estado_invalido_y_patch_status():
+    # Creación con estado inválido
+    res_inv = client.post("/api/resources", json={
+        "nombre": "Teclado Mecánico",
+        "categoria": "computo",
+        "serial": "KEY-MECH-001",
+        "ubicacion_actual": "Almacén",
+        "estado": "quemado"
+    })
+    assert res_inv.status_code == 400
+    assert "inválido" in res_inv.json()["detail"]
+
+    # PATCH a estado válido
+    patch_res = client.patch("/api/resources/rec-01/status", json={"estado": "en_mantenimiento"})
+    assert patch_res.status_code == 200
+    assert patch_res.json()["estado"] == "en_mantenimiento"
+
+    # PATCH a estado inválido
+    patch_inv = client.patch("/api/resources/rec-01/status", json={"estado": "averiado"})
+    assert patch_inv.status_code == 400
+    assert "inválido" in patch_inv.json()["detail"]
+
