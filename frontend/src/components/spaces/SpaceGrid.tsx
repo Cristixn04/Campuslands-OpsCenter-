@@ -58,10 +58,10 @@ export const SpaceGrid: React.FC<SpaceGridProps> = ({
   return (
     <div className="space-y-6">
       {/* Barra de Filtros y Búsqueda con fondo oscuro y alto contraste */}
-      <div className="glass-morphism-card p-4 flex flex-wrap items-center justify-between gap-4 border border-white/10 !bg-[#060c1a]/95 backdrop-blur-2xl shadow-xl">
-        {/* Pills de Filtrado */}
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs text-slate-300 font-mono flex items-center gap-1.5 mr-1 font-semibold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+      <div className="glass-morphism-card p-3.5 sm:p-4 flex flex-wrap items-center justify-between gap-3 sm:gap-4 border border-white/10 !bg-[#060c1a]/95 backdrop-blur-2xl shadow-xl">
+        {/* Pills de Filtrado con Scroll Horizontal en Móviles */}
+        <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto scrollbar-none touch-scroll pb-1 sm:pb-0 w-full sm:w-auto -mx-1 px-1 sm:mx-0 sm:px-0 sm:flex-wrap">
+          <span className="text-xs text-slate-300 font-mono flex items-center gap-1.5 mr-1 font-semibold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] shrink-0">
             <Filter className="w-3.5 h-3.5 text-campus-teal" />
             Filtros:
           </span>
@@ -76,7 +76,7 @@ export const SpaceGrid: React.FC<SpaceGridProps> = ({
             <button
               key={tab.id}
               onClick={() => setFilterType(tab.id)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-medium shrink-0 whitespace-nowrap transition-all ${
                 filterType === tab.id
                   ? 'bg-campus-teal/20 text-campus-teal border border-campus-teal/40 font-semibold'
                   : 'bg-white/5 text-slate-400 hover:text-slate-200 border border-white/5'
@@ -88,8 +88,8 @@ export const SpaceGrid: React.FC<SpaceGridProps> = ({
         </div>
 
         {/* Checkbox solo disponibles y buscador */}
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer select-none">
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
+          <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer select-none shrink-0">
             <input
               type="checkbox"
               checked={onlyAvailable}
@@ -99,7 +99,7 @@ export const SpaceGrid: React.FC<SpaceGridProps> = ({
             <span>Solo disponibles</span>
           </label>
 
-          <div className="relative flex-1 sm:w-64">
+          <div className="relative flex-1 min-w-[170px] sm:w-64">
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
@@ -113,7 +113,7 @@ export const SpaceGrid: React.FC<SpaceGridProps> = ({
           {role === 'admin' && onOpenCreateModal && (
             <button
               onClick={onOpenCreateModal}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-campus-purple to-pink-600 hover:opacity-90 text-white shadow-md shadow-purple-500/20 transition active:scale-95 whitespace-nowrap"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-campus-purple to-pink-600 hover:opacity-90 text-white shadow-md shadow-purple-500/20 transition active:scale-95 whitespace-nowrap shrink-0"
             >
               <PlusCircle className="w-3.5 h-3.5" />
               <span>Nueva Sala</span>

@@ -44,10 +44,10 @@ export const ResourceList: React.FC<ResourceListProps> = ({
   return (
     <div className="space-y-6">
       {/* Header y Filtros */}
-      <div className="glass-panel rounded-2xl p-5 flex flex-wrap items-center justify-between gap-4">
+      <div className="glass-panel rounded-2xl p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <Laptop className="w-5 h-5 text-campus-teal" />
+            <Laptop className="w-5 h-5 text-campus-teal shrink-0" />
             <h2 className="text-base font-bold text-white tracking-tight">Inventario de Recursos Tecnológicos</h2>
           </div>
           <p className="text-xs text-slate-400 mt-0.5">
@@ -55,9 +55,9 @@ export const ResourceList: React.FC<ResourceListProps> = ({
           </p>
         </div>
 
-        {/* Filtro por Categoría y Botón Admin */}
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-1.5 bg-[#0c1830] border border-white/20 p-1 rounded-xl">
+        {/* Filtro por Categoría y Botón Admin con Scroll Horizontal en Móviles */}
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
+          <div className="flex items-center gap-1.5 bg-[#0c1830] border border-white/20 p-1 rounded-xl overflow-x-auto scrollbar-none touch-scroll max-w-full w-full sm:w-auto">
             {[
               { id: 'all', label: 'Todos' },
               { id: 'computo', label: 'Cómputo' },
@@ -68,7 +68,7 @@ export const ResourceList: React.FC<ResourceListProps> = ({
               <button
                 key={cat.id}
                 onClick={() => setFilterCategory(cat.id)}
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition ${
+                className={`px-3 py-1 rounded-lg text-xs font-medium shrink-0 whitespace-nowrap transition ${
                   filterCategory === cat.id
                     ? 'bg-campus-teal/20 text-campus-teal border border-campus-teal/30 font-semibold'
                     : 'text-slate-400 hover:text-slate-200'
@@ -82,7 +82,7 @@ export const ResourceList: React.FC<ResourceListProps> = ({
           {role === 'admin' && onOpenCreateModal && (
             <button
               onClick={onOpenCreateModal}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-campus-teal to-campus-blue hover:opacity-90 text-white shadow-md shadow-teal-500/20 transition active:scale-95 whitespace-nowrap"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-campus-teal to-campus-blue hover:opacity-90 text-white shadow-md shadow-teal-500/20 transition active:scale-95 whitespace-nowrap shrink-0"
             >
               <PlusCircle className="w-3.5 h-3.5" />
               <span>Nuevo Equipo</span>
@@ -100,7 +100,7 @@ export const ResourceList: React.FC<ResourceListProps> = ({
           return (
             <div
               key={rec.id}
-              className={`glass-panel glass-panel-hover rounded-2xl p-5 flex flex-col justify-between transition-all ${
+              className={`glass-panel glass-panel-hover rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-all ${
                 isInhabilitado
                   ? 'border-campus-danger/40 bg-campus-danger/5'
                   : !isDisponible

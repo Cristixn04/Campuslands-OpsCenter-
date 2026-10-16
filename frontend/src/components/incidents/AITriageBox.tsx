@@ -43,7 +43,7 @@ export const AITriageBox: React.FC<AITriageBoxProps> = ({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Panel Izquierdo: Formulario Copiloto IA */}
-      <div className="lg:col-span-1 glass-panel rounded-2xl p-6 relative overflow-hidden border border-white/10 shadow-2xl">
+      <div className="lg:col-span-1 glass-panel rounded-2xl p-4 sm:p-6 relative overflow-hidden border border-white/10 shadow-2xl">
         {/* Glow cósmico de fondo */}
         <div className="absolute top-0 right-0 w-48 h-48 bg-campus-purple/15 blur-3xl rounded-full pointer-events-none -mr-16 -mt-16"></div>
 
