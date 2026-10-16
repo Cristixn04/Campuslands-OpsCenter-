@@ -15,6 +15,7 @@ export interface Recurso {
   serial: string;
   estado: 'disponible' | 'en_uso' | 'en_mantenimiento' | 'inhabilitado';
   ubicacion_actual: string;
+  imagen_url?: string;
 }
 
 export interface Reserva {
