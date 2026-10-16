@@ -66,20 +66,20 @@ Todas las reglas de negocio están centralizadas en el archivo `backend/app/core
 
 ---
 
-## 🏛️ Dataset Oficial de Capacidad Instalada Cargado
+## 🏛️ Dataset Oficial de Capacidad Instalada (Zenith Tower - Piso 6)
 
 - **Auditorio:** 100 personas
-- **Spooki:** 38 personas
+- **Sputnik:** 38 personas
 - **Apolo:** 34 personas
 - **Artemis:** 32 personas
 - **Cosmos:** 25 personas
-- **Skilab:** 20 personas
-- **Blanca:** 12 personas
-- **Azul:** 10 personas
-- **Amarilla 1:** 6 personas
-- **Amarilla 2:** 6 personas
-- **Verde 1:** 6 personas
-- **Verde 2:** 6 personas
+- **Skylab:** 20 personas
+- **Sala Blanca:** 12 personas
+- **Sala Azul:** 10 personas
+- **Sala Amarilla A:** 6 personas
+- **Sala Amarilla B:** 6 personas
+- **Sala Verde A:** 6 personas
+- **Sala Verde B:** 6 personas
 
 *(Los datos se cargan automáticamente desde `data/campus_seed.json` al iniciar PostgreSQL).*
 
