@@ -8,14 +8,12 @@ def seed_database(db: Session):
     Inserta el dataset oficial de Campuslands si la base de datos está vacía.
     Garantiza que Auditorio 100, Spooki 38, Apolo 34, etc. estén disponibles.
     """
-    if db.query(Espacio).first():
-        return # Ya sembrado
-
     # Buscar el archivo de seed en rutas posibles
     posibles_rutas = [
         "/app/data/campus_seed.json",
         "data/campus_seed.json",
-        "../data/campus_seed.json"
+        "../data/campus_seed.json",
+        "../../data/campus_seed.json"
     ]
     seed_file = None
     for r in posibles_rutas:
@@ -30,25 +28,38 @@ def seed_database(db: Session):
     with open(seed_file, "r", encoding="utf-8") as f:
         data = json.load(f)
 
+
+    inserted_spaces = 0
     for item in data.get("espacios", []):
-        db.add(Espacio(
-            id=item["id"],
-            nombre=item["nombre"],
-            tipo=item["tipo"],
-            capacidad=item["capacidad"],
-            ubicacion=item["ubicacion"],
-            estado=item.get("estado", "disponible")
-        ))
+        exists = db.query(Espacio).filter(Espacio.id == item["id"]).first()
+        if not exists:
+            db.add(Espacio(
+                id=item["id"],
+                nombre=item["nombre"],
+                tipo=item["tipo"],
+                capacidad=item["capacidad"],
+                ubicacion=item["ubicacion"],
+                estado=item.get("estado", "disponible")
+            ))
+            inserted_spaces += 1
 
+    inserted_resources = 0
     for item in data.get("recursos", []):
-        db.add(Recurso(
-            id=item["id"],
-            nombre=item["nombre"],
-            categoria=item["categoria"],
-            serial=item["serial"],
-            estado=item.get("estado", "disponible"),
-            ubicacion_actual=item.get("ubicacion_actual", "Almacén Central")
-        ))
+        exists = db.query(Recurso).filter(Recurso.id == item["id"]).first()
+        if not exists:
+            db.add(Recurso(
+                id=item["id"],
+                nombre=item["nombre"],
+                categoria=item["categoria"],
+                serial=item["serial"],
+                estado=item.get("estado", "disponible"),
+                ubicacion_actual=item.get("ubicacion_actual", "Almacén Central")
+            ))
+            inserted_resources += 1
 
-    db.commit()
-    print("[SUCCESS] Dataset oficial de Campuslands cargado con éxito en PostgreSQL.")
+    if inserted_spaces > 0 or inserted_resources > 0:
+        db.commit()
+        print(f"[SUCCESS] Dataset oficial sembrado: {inserted_spaces} espacios y {inserted_resources} recursos.")
+    else:
+        print("[SEED] Dataset oficial ya se encuentra cargado e íntegro.")
+
