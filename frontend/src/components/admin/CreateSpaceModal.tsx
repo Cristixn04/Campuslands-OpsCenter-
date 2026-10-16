@@ -16,7 +16,7 @@ export const CreateSpaceModal: React.FC<CreateSpaceModalProps> = ({
 }) => {
   const [nombre, setNombre] = useState('');
   const [tipo, setTipo] = useState('laboratorio_ia');
-  const [capacidad, setCapacidad] = useState<number>(25);
+  const [capacidad, setCapacidad] = useState<number | ''>('');
   const [ubicacion, setUbicacion] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -26,30 +26,40 @@ export const CreateSpaceModal: React.FC<CreateSpaceModalProps> = ({
     e.preventDefault();
     setError(null);
 
-    if (!nombre.trim()) {
-      setError('El nombre de la sala es obligatorio.');
+    const cleanNombre = nombre.trim();
+    if (!cleanNombre || cleanNombre.length < 3) {
+      setError('El nombre de la sala debe tener al menos 3 caracteres.');
       return;
     }
-    if (capacidad <= 0) {
-      setError('La capacidad debe ser un número mayor a 0.');
+
+    const capNum = Number(capacidad);
+    if (capacidad === '' || isNaN(capNum) || capNum <= 0) {
+      setError('La capacidad debe ser un número entero mayor a 0.');
       return;
     }
-    if (!ubicacion.trim()) {
-      setError('La ubicación dentro del campus es obligatoria.');
+
+    if (capNum > 500) {
+      setError('La capacidad máxima permitida por sala es de 500 personas.');
+      return;
+    }
+
+    const cleanUbicacion = ubicacion.trim();
+    if (!cleanUbicacion || cleanUbicacion.length < 3) {
+      setError('La ubicación dentro del campus debe tener al menos 3 caracteres.');
       return;
     }
 
     try {
       await onCreateSpace({
-        nombre: nombre.trim(),
+        nombre: cleanNombre,
         tipo,
-        capacidad: Number(capacidad),
-        ubicacion: ubicacion.trim()
+        capacidad: capNum,
+        ubicacion: cleanUbicacion
       });
       // Limpiar formulario y cerrar
       setNombre('');
       setTipo('laboratorio_ia');
-      setCapacidad(25);
+      setCapacidad('');
       setUbicacion('');
       onClose();
     } catch (err: any) {
@@ -142,8 +152,12 @@ export const CreateSpaceModal: React.FC<CreateSpaceModalProps> = ({
               min={1}
               max={500}
               value={capacidad}
-              onChange={(e) => setCapacidad(Number(e.target.value))}
-              className="w-full bg-[#0c1830] border border-white/20 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-campus-purple focus:ring-1 focus:ring-campus-purple/40"
+              onChange={(e) => {
+                const val = e.target.value;
+                setCapacidad(val === '' ? '' : Math.max(1, parseInt(val, 10) || 1));
+              }}
+              placeholder="Ej. 25"
+              className="w-full bg-[#0c1830] border border-white/20 rounded-xl p-2.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-campus-purple focus:ring-1 focus:ring-campus-purple/40"
               required
             />
           </div>

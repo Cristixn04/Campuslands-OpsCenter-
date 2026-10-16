@@ -14,7 +14,9 @@ import {
   CheckCircle2,
   Layers,
   Sparkles,
-  Building2
+  Building2,
+  XCircle,
+  AlertTriangle
 } from 'lucide-react';
 import { Reserva, Espacio } from '../../types';
 import { generateGoogleCalendarUrl, downloadIcsFile } from '../../utils/googleCalendar';
@@ -23,12 +25,14 @@ export interface CalendarTimelineProps {
   reservas: Reserva[];
   espacios: Espacio[];
   className?: string;
+  onCancelReservation?: (id: number) => Promise<void>;
 }
 
 export const CalendarTimeline: React.FC<CalendarTimelineProps> = ({
   reservas = [],
   espacios = [],
-  className = ''
+  className = '',
+  onCancelReservation
 }) => {
   // Helper para obtener fecha local en formato YYYY-MM-DD
   const getTodayString = (): string => {
@@ -45,6 +49,25 @@ export const CalendarTimeline: React.FC<CalendarTimelineProps> = ({
   const [showAllDates, setShowAllDates] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<'agenda' | 'timeline'>('agenda');
   const [onlyOccupiedInTimeline, setOnlyOccupiedInTimeline] = useState<boolean>(false);
+
+  // Estado para cancelación de reserva (Cliente y Admin)
+  const [reservaToCancel, setReservaToCancel] = useState<Reserva | null>(null);
+  const [isCancelling, setIsCancelling] = useState(false);
+  const [cancelError, setCancelError] = useState<string | null>(null);
+
+  const handleConfirmCancel = async () => {
+    if (!reservaToCancel || !onCancelReservation) return;
+    try {
+      setIsCancelling(true);
+      setCancelError(null);
+      await onCancelReservation(reservaToCancel.id);
+      setReservaToCancel(null);
+    } catch (err: any) {
+      setCancelError(err?.response?.data?.detail || err?.message || 'Error al cancelar la reserva');
+    } finally {
+      setIsCancelling(false);
+    }
+  };
 
   // Mapeo rápido de ID de espacio a Objeto Espacio
   const spacesMap = useMemo(() => {
@@ -724,6 +747,19 @@ export const CalendarTimeline: React.FC<CalendarTimelineProps> = ({
                                     >
                                       <Download className="w-3 h-3" />
                                     </button>
+                                    {onCancelReservation && reserva.estado !== 'cancelada' && (
+                                      <button
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setReservaToCancel(reserva);
+                                        }}
+                                        className="p-1 rounded hover:bg-rose-500 hover:text-white text-rose-300 transition"
+                                        title="Cancelar esta reserva"
+                                      >
+                                        <XCircle className="w-3 h-3" />
+                                      </button>
+                                    )}
                                   </div>
                                 </div>
                               );
@@ -909,6 +945,19 @@ export const CalendarTimeline: React.FC<CalendarTimelineProps> = ({
                       <Download className="w-3.5 h-3.5 text-campus-purple group-hover:scale-110 transition-transform shrink-0" />
                       <span>Descargar .ICS</span>
                     </button>
+
+                    {/* Botón Cancelar Reserva (Cliente y Admin) */}
+                    {onCancelReservation && reserva.estado !== 'cancelada' && (
+                      <button
+                        type="button"
+                        onClick={() => setReservaToCancel(reserva)}
+                        className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 hover:text-white border border-rose-500/30 hover:border-rose-500/60 transition-all shadow-sm group cursor-pointer"
+                        title="Cancelar esta reserva y liberar la sala inmediatamente"
+                      >
+                        <XCircle className="w-3.5 h-3.5 text-rose-400 group-hover:scale-110 transition-transform shrink-0" />
+                        <span>Cancelar</span>
+                      </button>
+                    )}
                   </div>
                 </div>
               );
@@ -916,6 +965,81 @@ export const CalendarTimeline: React.FC<CalendarTimelineProps> = ({
           </div>
         )}
       </div>
+
+      {/* MODAL DE CONFIRMACIÓN DE CANCELACIÓN (CLIENTE Y ADMIN) */}
+      {reservaToCancel && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-[#070e1e] border border-rose-500/40 rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl shadow-rose-950/50 text-left relative">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-400 flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white">¿Cancelar esta reserva?</h3>
+                <p className="text-xs text-slate-400">Esta acción liberará la sala para que otros campers puedan usarla.</p>
+              </div>
+            </div>
+
+            <div className="bg-[#02050e]/90 border border-white/10 rounded-xl p-3 my-4 space-y-1.5 text-xs">
+              <div className="flex justify-between text-slate-300">
+                <span className="text-slate-500">Espacio:</span>
+                <span className="font-semibold text-white">
+                  {spacesMap.get(reservaToCancel.espacio_id)?.nombre || reservaToCancel.espacio_id}
+                </span>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span className="text-slate-500">Solicitante:</span>
+                <span className="text-white">{reservaToCancel.solicitante}</span>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span className="text-slate-500">Motivo:</span>
+                <span className="text-white truncate max-w-[240px]">{reservaToCancel.motivo}</span>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span className="text-slate-500">Horario:</span>
+                <span className="font-mono text-campus-teal">
+                  {formatTimeRange(reservaToCancel.fecha_inicio, reservaToCancel.fecha_fin).timeText}
+                </span>
+              </div>
+            </div>
+
+            {cancelError && (
+              <p className="text-xs text-rose-400 bg-rose-500/10 border border-rose-500/30 p-2.5 rounded-lg mb-4">
+                {cancelError}
+              </p>
+            )}
+
+            <div className="flex items-center justify-end gap-2.5">
+              <button
+                type="button"
+                disabled={isCancelling}
+                onClick={() => {
+                  setReservaToCancel(null);
+                  setCancelError(null);
+                }}
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 border border-white/15 transition cursor-pointer"
+              >
+                Volver
+              </button>
+              <button
+                type="button"
+                disabled={isCancelling}
+                onClick={handleConfirmCancel}
+                className="px-4 py-2 rounded-xl text-xs font-semibold bg-rose-500 hover:bg-rose-600 text-white shadow-lg shadow-rose-500/30 transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+              >
+                {isCancelling ? (
+                  <span>Cancelando...</span>
+                ) : (
+                  <>
+                    <XCircle className="w-3.5 h-3.5" />
+                    <span>Confirmar Cancelación</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

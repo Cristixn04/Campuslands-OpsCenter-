@@ -66,3 +66,12 @@ export const createResource = async (resource: { nombre: string; categoria: stri
   const { data } = await api.post('/resources', resource);
   return data;
 };
+
+export const cancelReservation = async (id: number): Promise<Reserva> => {
+  const { data } = await api.patch(`/reservations/${id}/cancel`);
+  return data;
+};
+
+export const deleteReservation = async (id: number): Promise<void> => {
+  await api.delete(`/reservations/${id}`);
+};

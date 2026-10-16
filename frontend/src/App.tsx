@@ -20,7 +20,8 @@ import {
   resolveIncident,
   updateSpaceStatus,
   createSpace,
-  createResource
+  createResource,
+  cancelReservation
 } from './api/client';
 import { Navbar } from './components/layout/Navbar';
 import { MetricsSummary } from './components/layout/MetricsSummary';
@@ -137,6 +138,27 @@ export default function App() {
       setFeedback({
         type: 'error',
         message: err.response?.data?.detail || 'Conflicto al crear la reserva.'
+      });
+      throw err;
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  // Manejo de Cancelación de Reserva (Cliente y Admin)
+  const handleCancelReservation = async (id: number) => {
+    try {
+      setActionLoading(true);
+      await cancelReservation(id);
+      setFeedback({
+        type: 'success',
+        message: 'Reserva cancelada con éxito. El espacio ha quedado liberado inmediatamente.'
+      });
+      await loadAllData();
+    } catch (err: any) {
+      setFeedback({
+        type: 'error',
+        message: err.response?.data?.detail || 'Error al cancelar la reserva.'
       });
       throw err;
     } finally {
@@ -386,6 +408,7 @@ export default function App() {
               <CalendarTimeline
                 reservas={reservations}
                 espacios={spaces}
+                onCancelReservation={handleCancelReservation}
               />
             )}
 
