@@ -28,6 +28,9 @@ export const SpaceGrid: React.FC<SpaceGridProps> = ({
     if (filterType === 'aulas' && !['aula', 'aula_magna', 'aula_tecnologica', 'aula_teorica'].includes(space.tipo.toLowerCase())) {
       return false;
     }
+    if (filterType === 'reuniones' && !space.tipo.toLowerCase().includes('reunion') && !space.tipo.toLowerCase().includes('sala_reuniones')) {
+      return false;
+    }
     if (filterType === 'cubiculos' && !space.tipo.toLowerCase().includes('cubículo')) {
       return false;
     }
@@ -55,17 +58,18 @@ export const SpaceGrid: React.FC<SpaceGridProps> = ({
   return (
     <div className="space-y-6">
       {/* Barra de Filtros y Búsqueda */}
-      <div className="glass-panel rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4">
+      <div className="crystal-lens-card p-4 flex flex-wrap items-center justify-between gap-4">
         {/* Pills de Filtrado */}
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs text-slate-400 font-mono flex items-center gap-1.5 mr-1">
+          <span className="text-xs text-slate-300 font-mono flex items-center gap-1.5 mr-1 font-semibold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
             <Filter className="w-3.5 h-3.5 text-campus-teal" />
             Filtros:
           </span>
           {[
             { id: 'todos', label: `Todos (${spaces.length})` },
-            { id: 'aulas', label: 'Aulas de Clase' },
+            { id: 'aulas', label: 'Aulas' },
             { id: 'labs', label: 'Laboratorios IA' },
+            { id: 'reuniones', label: 'Salas de Reuniones' },
             { id: 'cubiculos', label: 'Cubículos' },
             { id: 'auditorio', label: 'Auditorio' },
           ].map(tab => (

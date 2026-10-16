@@ -147,3 +147,102 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
 .animate-float {
   animation: floatSlow 5s ease-in-out infinite;
 }
+
+/* ========================================================= */
+/* Lente Óptica / Cristal Ultra-Transparente (Efecto Lente)   */
+/* Mucho más transparente, con reflejos y refracción óptica  */
+/* ========================================================= */
+.crystal-lens-card {
+  position: relative;
+  background: radial-gradient(circle at 18% 0%, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.03) 40%, transparent 75%),
+              linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(3, 8, 20, 0.25) 100%);
+  backdrop-filter: blur(32px) saturate(220%) brightness(110%);
+  -webkit-backdrop-filter: blur(32px) saturate(220%) brightness(110%);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  border-top: 1.5px solid rgba(255, 255, 255, 0.65);
+  border-left: 1.2px solid rgba(255, 255, 255, 0.38);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+  border-right: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 
+    0 18px 40px -10px rgba(0, 0, 0, 0.65),
+    inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1px 2px 0 rgba(0, 0, 0, 0.25),
+    inset 0 0 25px 0 rgba(255, 255, 255, 0.02);
+  border-radius: 1.25rem;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+/* Destello de bisel óptico superior del lente */
+.crystal-lens-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.95), transparent);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Efecto de elevación e iluminación al pasar el cursor */
+.crystal-lens-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 
+    0 24px 50px -10px rgba(0, 0, 0, 0.75),
+    inset 0 2px 3px 0 rgba(255, 255, 255, 0.8),
+    inset 0 0 35px 0 rgba(255, 255, 255, 0.07);
+}
+
+/* Acentos cromáticos para el lente según el KPI */
+.crystal-lens-teal:hover {
+  border-color: rgba(84, 198, 170, 0.6);
+  border-top-color: rgba(84, 198, 170, 0.95);
+  box-shadow: 
+    0 24px 50px -10px rgba(84, 198, 170, 0.22),
+    0 0 30px -4px rgba(84, 198, 170, 0.3),
+    inset 0 2px 3px 0 rgba(255, 255, 255, 0.8),
+    inset 0 0 30px 0 rgba(84, 198, 170, 0.1);
+}
+
+.crystal-lens-cyan:hover {
+  border-color: rgba(0, 229, 255, 0.6);
+  border-top-color: rgba(0, 229, 255, 0.95);
+  box-shadow: 
+    0 24px 50px -10px rgba(0, 229, 255, 0.22),
+    0 0 30px -4px rgba(0, 229, 255, 0.3),
+    inset 0 2px 3px 0 rgba(255, 255, 255, 0.8),
+    inset 0 0 30px 0 rgba(0, 229, 255, 0.1);
+}
+
+.crystal-lens-blue:hover {
+  border-color: rgba(56, 189, 248, 0.6);
+  border-top-color: rgba(56, 189, 248, 0.95);
+  box-shadow: 
+    0 24px 50px -10px rgba(56, 189, 248, 0.22),
+    0 0 30px -4px rgba(56, 189, 248, 0.3),
+    inset 0 2px 3px 0 rgba(255, 255, 255, 0.8),
+    inset 0 0 30px 0 rgba(56, 189, 248, 0.1);
+}
+
+.crystal-lens-rose:hover {
+  border-color: rgba(244, 63, 94, 0.65);
+  border-top-color: rgba(244, 63, 94, 0.95);
+  box-shadow: 
+    0 24px 50px -10px rgba(244, 63, 94, 0.3),
+    0 0 30px -4px rgba(244, 63, 94, 0.4),
+    inset 0 2px 3px 0 rgba(255, 255, 255, 0.8),
+    inset 0 0 30px 0 rgba(244, 63, 94, 0.15);
+}
+
+.crystal-lens-emerald:hover {
+  border-color: rgba(52, 211, 153, 0.6);
+  border-top-color: rgba(52, 211, 153, 0.95);
+  box-shadow: 
+    0 24px 50px -10px rgba(52, 211, 153, 0.22),
+    0 0 30px -4px rgba(52, 211, 153, 0.3),
+    inset 0 2px 3px 0 rgba(255, 255, 255, 0.8),
+    inset 0 0 30px 0 rgba(52, 211, 153, 0.1);
+}
+

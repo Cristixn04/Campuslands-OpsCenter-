@@ -5,15 +5,15 @@
       "nombre": "Auditorio",
       "tipo": "auditorio",
       "capacidad": 100,
-      "ubicacion": "Edificio Central - Piso 1",
+      "ubicacion": "Zenith Tower - Piso 6",
       "estado": "disponible"
     },
     {
       "id": "esp-02",
-      "nombre": "Spooki",
+      "nombre": "Spuknic",
       "tipo": "aula_magna",
       "capacidad": 38,
-      "ubicacion": "Edificio A - Piso 2",
+      "ubicacion": "Zenith Tower - Piso 6",
       "estado": "disponible"
     },
     {
@@ -21,7 +21,7 @@
       "nombre": "Apolo",
       "tipo": "aula_tecnologica",
       "capacidad": 34,
-      "ubicacion": "Edificio B - Piso 1",
+      "ubicacion": "Zenith Tower - Piso 6",
       "estado": "disponible"
     },
     {
@@ -29,7 +29,7 @@
       "nombre": "Artemis",
       "tipo": "aula_tecnologica",
       "capacidad": 32,
-      "ubicacion": "Edificio B - Piso 2",
+      "ubicacion": "Zenith Tower - Piso 6",
       "estado": "disponible"
     },
     {
@@ -37,63 +37,63 @@
       "nombre": "Cosmos",
       "tipo": "aula_teorica",
       "capacidad": 25,
-      "ubicacion": "Edificio A - Piso 1",
+      "ubicacion": "Zenith Tower - Piso 6",
       "estado": "disponible"
     },
     {
       "id": "esp-06",
-      "nombre": "Skilab",
+      "nombre": "Skylab",
       "tipo": "laboratorio_ia",
       "capacidad": 20,
-      "ubicacion": "Edificio C - Piso 1",
+      "ubicacion": "Zenith Tower - Piso 6",
       "estado": "disponible"
     },
     {
       "id": "esp-07",
-      "nombre": "Blanca",
+      "nombre": "Sala Blanca",
       "tipo": "sala_reuniones",
       "capacidad": 12,
-      "ubicacion": "Zona Co-working - Piso 2",
+      "ubicacion": "Zenith Tower - Piso 6",
       "estado": "disponible"
     },
     {
       "id": "esp-08",
-      "nombre": "Azul",
+      "nombre": "Sala Azul",
       "tipo": "sala_reuniones",
       "capacidad": 10,
-      "ubicacion": "Zona Co-working - Piso 2",
+      "ubicacion": "Zenith Tower - Piso 6",
       "estado": "disponible"
     },
     {
       "id": "esp-09",
-      "nombre": "Amarilla 1",
+      "nombre": "Sala Amarilla A",
       "tipo": "cubículo",
       "capacidad": 6,
-      "ubicacion": "Zona de Estudio - Ala Norte",
+      "ubicacion": "Zenith Tower - Piso 6",
       "estado": "disponible"
     },
     {
       "id": "esp-10",
-      "nombre": "Amarilla 2",
+      "nombre": "Sala Amarilla B",
       "tipo": "cubículo",
       "capacidad": 6,
-      "ubicacion": "Zona de Estudio - Ala Norte",
+      "ubicacion": "Zenith Tower - Piso 6",
       "estado": "disponible"
     },
     {
       "id": "esp-11",
-      "nombre": "Verde 1",
+      "nombre": "Sala Verde A",
       "tipo": "cubículo",
       "capacidad": 6,
-      "ubicacion": "Zona de Estudio - Ala Sur",
+      "ubicacion": "Zenith Tower - Piso 6",
       "estado": "disponible"
     },
     {
       "id": "esp-12",
-      "nombre": "Verde 2",
+      "nombre": "Sala Verde B",
       "tipo": "cubículo",
       "capacidad": 6,
-      "ubicacion": "Zona de Estudio - Ala Sur",
+      "ubicacion": "Zenith Tower - Piso 6",
       "estado": "disponible"
     }
   ],

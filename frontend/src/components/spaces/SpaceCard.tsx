@@ -65,21 +65,30 @@ export const SpaceCard: React.FC<SpaceCardProps> = ({
     }
   };
 
-  const [extIndex, setExtIndex] = useState<number>(0);
-  const extensions = ['.jpg', '.png', '.webp'];
-
-  // Resolución de foto de la sala (Revisa espacio.imagen_url o public/spaces/[nombre].jpg/png/webp)
+  // Resolución multi-formato de foto de la sala (Nombre slug o ID en .jpg, .png, .webp)
   const slug = space.nombre
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/\s+/g, '-');
-  
-  const photoUrl = space.imagen_url || `/spaces/${slug}${extensions[extIndex]}`;
+
+  const candidateUrls = space.imagen_url
+    ? [space.imagen_url]
+    : [
+        `/spaces/${slug}.jpg`,
+        `/spaces/${slug}.png`,
+        `/spaces/${slug}.webp`,
+        `/spaces/${space.id}.jpg`,
+        `/spaces/${space.id}.png`,
+        `/spaces/${space.id}.webp`,
+      ];
+
+  const [urlIndex, setUrlIndex] = useState<number>(0);
+  const photoUrl = candidateUrls[urlIndex] || '';
 
   const handleImageError = () => {
-    if (!space.imagen_url && extIndex < extensions.length - 1) {
-      setExtIndex(prev => prev + 1);
+    if (urlIndex < candidateUrls.length - 1) {
+      setUrlIndex(prev => prev + 1);
     } else {
       setImageError(true);
     }
@@ -190,7 +199,7 @@ export const SpaceCard: React.FC<SpaceCardProps> = ({
         </div>
 
         {/* Métrica de Aforo Cósmico con Barra de Capacidad */}
-        <div className="bg-[#030611]/80 border border-white/10 rounded-2xl p-3.5 mb-4 shadow-inner">
+        <div className="crystal-lens-card !rounded-2xl p-3.5 mb-4 !border-white/15 !bg-white/[0.03] shadow-inner">
           <div className="flex items-center justify-between text-xs mb-1.5">
             <span className="text-slate-200 font-medium flex items-center gap-1.5">
               <Users className="w-3.5 h-3.5 text-campus-cyan" />
