@@ -84,20 +84,20 @@ export const SpaceCard: React.FC<SpaceCardProps> = ({
         </div>
 
         {/* Ubicación */}
-        <p className="text-xs text-slate-400 flex items-center gap-1.5 mb-4">
-          <MapPin className="w-3.5 h-3.5 text-slate-500" />
+        <p className="text-xs text-slate-300 font-medium flex items-center gap-1.5 mb-4">
+          <MapPin className="w-3.5 h-3.5 text-campus-teal" />
           <span>{space.ubicacion}</span>
         </p>
 
         {/* Métrica de Aforo */}
-        <div className="bg-campus-deep/60 border border-white/5 rounded-xl p-3 mb-4">
+        <div className="bg-[#040a1a]/80 border border-white/10 rounded-xl p-3 mb-4 shadow-inner">
           <div className="flex items-center justify-between text-xs mb-1.5">
-            <span className="text-slate-400 flex items-center gap-1.5">
-              <Users className="w-3.5 h-3.5 text-campus-teal" />
+            <span className="text-slate-200 font-medium flex items-center gap-1.5">
+              <Users className="w-3.5 h-3.5 text-campus-cyan" />
               Capacidad Instalada:
             </span>
             <span className="font-mono font-bold text-white text-sm">
-              {space.capacidad} <span className="text-xs font-normal text-slate-400">personas</span>
+              {space.capacidad} <span className="text-xs font-normal text-slate-300">campers</span>
             </span>
           </div>
           {/* Barra de capacidad */}

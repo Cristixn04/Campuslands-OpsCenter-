@@ -298,7 +298,7 @@ export const CalendarTimeline: React.FC<CalendarTimelineProps> = ({
         <div className="mt-6 pt-5 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
           {/* Navegador de Fecha */}
           <div className="flex items-center flex-wrap gap-2">
-            <div className="flex items-center bg-campus-deep/90 rounded-xl border border-white/10 p-1 shadow-inner">
+            <div className="flex items-center bg-[#0c1830] rounded-xl border border-white/20 p-1 shadow-inner">
               <button
                 type="button"
                 onClick={() => handleNavigateDay(-1)}
@@ -339,7 +339,7 @@ export const CalendarTimeline: React.FC<CalendarTimelineProps> = ({
                   setShowAllDates(false);
                   if (e.target.value) setSelectedDate(e.target.value);
                 }}
-                className="bg-campus-deep/90 border border-white/10 rounded-xl px-3 py-1.5 text-xs font-mono text-slate-200 focus:outline-none focus:border-campus-teal transition shadow-inner cursor-pointer"
+                className="bg-[#0c1830] border border-white/20 rounded-xl px-3 py-1.5 text-xs font-mono text-white focus:outline-none focus:border-campus-teal focus:ring-1 focus:ring-campus-teal/30 transition shadow-inner cursor-pointer"
               />
             </div>
 
@@ -442,7 +442,7 @@ export const CalendarTimeline: React.FC<CalendarTimelineProps> = ({
               placeholder="Buscar por solicitante, motivo o sala..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full bg-campus-surface/90 border border-white/10 rounded-xl pl-10 pr-4 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-campus-teal transition shadow-inner font-sans"
+              className="w-full bg-[#0c1830] border border-white/20 rounded-xl pl-10 pr-4 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-campus-teal focus:ring-1 focus:ring-campus-teal/30 transition shadow-inner font-sans"
             />
           </div>
 
@@ -452,7 +452,7 @@ export const CalendarTimeline: React.FC<CalendarTimelineProps> = ({
             <select
               value={filterSpaceId}
               onChange={e => setFilterSpaceId(e.target.value)}
-              className="w-full bg-campus-surface/90 border border-white/10 rounded-xl pl-9 pr-7 py-2 text-xs text-slate-200 focus:outline-none focus:border-campus-teal transition shadow-inner appearance-none cursor-pointer font-sans"
+              className="w-full bg-[#0c1830] border border-white/20 rounded-xl pl-9 pr-7 py-2 text-xs text-white focus:outline-none focus:border-campus-teal focus:ring-1 focus:ring-campus-teal/30 transition shadow-inner appearance-none cursor-pointer font-sans"
             >
               <option value="all">Todos los Espacios ({espacios.length})</option>
               {espacios.map(esp => (

@@ -97,7 +97,7 @@ export const AITriageBox: React.FC<AITriageBoxProps> = ({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Escribe en lenguaje natural. Ej: El proyector de Apolo huele a quemado y los cables están calientes..."
-              className="w-full bg-campus-deep/90 border border-white/10 rounded-xl p-3 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-campus-purple/60 focus:ring-1 focus:ring-campus-purple/40"
+              className="w-full bg-[#0c1830] border border-white/20 rounded-xl p-3 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-campus-purple focus:ring-1 focus:ring-campus-purple/40"
               required
             />
           </div>

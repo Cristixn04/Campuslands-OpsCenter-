@@ -2,20 +2,22 @@ import React, { useState } from 'react';
 import { Espacio } from '../../types';
 import { SpaceCard } from './SpaceCard';
 import { UserRole } from '../layout/Navbar';
-import { Filter, Search } from 'lucide-react';
+import { Filter, Search, PlusCircle } from 'lucide-react';
 
 interface SpaceGridProps {
   spaces: Espacio[];
   role: UserRole;
   onSelectToReserve: (spaceId: string) => void;
   onToggleStatusAdmin?: (spaceId: string, newStatus: string) => void;
+  onOpenCreateModal?: () => void;
 }
 
 export const SpaceGrid: React.FC<SpaceGridProps> = ({
   spaces,
   role,
   onSelectToReserve,
-  onToggleStatusAdmin
+  onToggleStatusAdmin,
+  onOpenCreateModal
 }) => {
   const [filterType, setFilterType] = useState<string>('todos');
   const [onlyAvailable, setOnlyAvailable] = useState<boolean>(false);
@@ -100,9 +102,19 @@ export const SpaceGrid: React.FC<SpaceGridProps> = ({
               placeholder="Buscar sala o piso..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-campus-deep/90 border border-white/10 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-campus-teal/50"
+              className="w-full bg-[#0c1830] border border-white/20 rounded-xl pl-9 pr-3 py-1.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-campus-teal focus:ring-1 focus:ring-campus-teal/30 transition shadow-inner"
             />
           </div>
+
+          {role === 'admin' && onOpenCreateModal && (
+            <button
+              onClick={onOpenCreateModal}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-campus-purple to-pink-600 hover:opacity-90 text-white shadow-md shadow-purple-500/20 transition active:scale-95 whitespace-nowrap"
+            >
+              <PlusCircle className="w-3.5 h-3.5" />
+              <span>Nueva Sala</span>
+            </button>
+          )}
         </div>
       </div>
 

@@ -120,13 +120,13 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Espacio */}
         <div>
-          <label className="block text-xs font-medium text-slate-300 mb-1.5">
+          <label className="block text-xs font-medium text-slate-200 mb-1.5">
             Espacio o Sala Requerida *
           </label>
           <select
             value={spaceId}
             onChange={(e) => setSpaceId(e.target.value)}
-            className="w-full bg-campus-deep/90 border border-white/10 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-campus-teal/60"
+            className="w-full bg-[#0c1830] border border-white/20 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-campus-teal focus:ring-1 focus:ring-campus-teal/30 cursor-pointer"
             required
           >
             <option value="">-- Seleccionar Espacio --</option>
@@ -144,7 +144,7 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
         {/* Asistentes con Validación Reactiva */}
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <label className="text-xs font-medium text-slate-300 flex items-center gap-1.5">
+            <label className="text-xs font-medium text-slate-200 flex items-center gap-1.5">
               <Users className="w-3.5 h-3.5 text-campus-cyan" />
               Número de Asistentes *
             </label>
@@ -159,10 +159,10 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
             min={1}
             value={attendees}
             onChange={(e) => setAttendees(Number(e.target.value))}
-            className={`w-full bg-campus-deep/90 border rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none transition ${
+            className={`w-full bg-[#0c1830] border rounded-xl p-2.5 text-xs text-white focus:outline-none transition ${
               isOverCapacity 
                 ? 'border-campus-danger text-campus-danger focus:ring-1 focus:ring-campus-danger' 
-                : 'border-white/10 focus:border-campus-teal/60'
+                : 'border-white/20 focus:border-campus-teal focus:ring-1 focus:ring-campus-teal/30'
             }`}
             required
           />
@@ -176,14 +176,14 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
 
         {/* Recurso Tecnológico (Opcional) */}
         <div>
-          <label className="block text-xs font-medium text-slate-300 mb-1.5 flex items-center gap-1.5">
+          <label className="block text-xs font-medium text-slate-200 mb-1.5 flex items-center gap-1.5">
             <Laptop className="w-3.5 h-3.5 text-campus-blue" />
             Recurso Tecnológico Adicional (Opcional)
           </label>
           <select
             value={resourceId}
             onChange={(e) => setResourceId(e.target.value)}
-            className="w-full bg-campus-deep/90 border border-white/10 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-campus-teal/60"
+            className="w-full bg-[#0c1830] border border-white/20 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-campus-teal focus:ring-1 focus:ring-campus-teal/30 cursor-pointer"
           >
             <option value="">-- Sin equipo tecnológico adicional --</option>
             {resources.map(r => (
@@ -196,7 +196,7 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
 
         {/* Solicitante */}
         <div>
-          <label className="block text-xs font-medium text-slate-300 mb-1.5">
+          <label className="block text-xs font-medium text-slate-200 mb-1.5">
             Nombre del Solicitante / Responsable *
           </label>
           <input
@@ -204,14 +204,14 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
             value={applicant}
             onChange={(e) => setApplicant(e.target.value)}
             placeholder="Ej. Camper / Trainer"
-            className="w-full bg-campus-deep/90 border border-white/10 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-campus-teal/60"
+            className="w-full bg-[#0c1830] border border-white/20 rounded-xl p-2.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-campus-teal focus:ring-1 focus:ring-campus-teal/30"
             required
           />
         </div>
 
         {/* Motivo */}
         <div>
-          <label className="block text-xs font-medium text-slate-300 mb-1.5">
+          <label className="block text-xs font-medium text-slate-200 mb-1.5">
             Motivo o Actividad *
           </label>
           <input
@@ -219,7 +219,7 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
             value={reason}
             onChange={(e) => setReason(e.target.value)}
             placeholder="Ej. Taller intensivo de Inteligencia Artificial / Hackatón"
-            className="w-full bg-campus-deep/90 border border-white/10 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-campus-teal/60"
+            className="w-full bg-[#0c1830] border border-white/20 rounded-xl p-2.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-campus-teal focus:ring-1 focus:ring-campus-teal/30"
             required
           />
         </div>
@@ -227,26 +227,26 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
         {/* Rango de Horario */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1.5">
+            <label className="block text-xs font-medium text-slate-200 mb-1.5">
               Fecha y Hora de Inicio *
             </label>
             <input
               type="datetime-local"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full bg-campus-deep/90 border border-white/10 rounded-xl p-2 text-xs text-slate-200 focus:outline-none focus:border-campus-teal/60"
+              className="w-full bg-[#0c1830] border border-white/20 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-campus-teal focus:ring-1 focus:ring-campus-teal/30 cursor-pointer"
               required
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1.5">
+            <label className="block text-xs font-medium text-slate-200 mb-1.5">
               Fecha y Hora de Fin *
             </label>
             <input
               type="datetime-local"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="w-full bg-campus-deep/90 border border-white/10 rounded-xl p-2 text-xs text-slate-200 focus:outline-none focus:border-campus-teal/60"
+              className="w-full bg-[#0c1830] border border-white/20 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-campus-teal focus:ring-1 focus:ring-campus-teal/30 cursor-pointer"
               required
             />
           </div>

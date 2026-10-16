@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Laptop, QrCode, MapPin, Tag, Wrench, CheckCircle } from 'lucide-react';
+import { Laptop, QrCode, MapPin, Tag, Wrench, CheckCircle, PlusCircle } from 'lucide-react';
 import { Recurso } from '../../types';
 import { UserRole } from '../layout/Navbar';
 
@@ -7,12 +7,14 @@ interface ResourceListProps {
   resources: Recurso[];
   role: UserRole;
   onToggleStatusAdmin?: (resourceId: string, newStatus: string) => void;
+  onOpenCreateModal?: () => void;
 }
 
 export const ResourceList: React.FC<ResourceListProps> = ({
   resources,
   role,
-  onToggleStatusAdmin
+  onToggleStatusAdmin,
+  onOpenCreateModal
 }) => {
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [selectedQrResource, setSelectedQrResource] = useState<Recurso | null>(null);
@@ -53,27 +55,39 @@ export const ResourceList: React.FC<ResourceListProps> = ({
           </p>
         </div>
 
-        {/* Filtro por Categoría */}
-        <div className="flex items-center gap-1.5 bg-campus-surface border border-white/10 p-1 rounded-xl">
-          {[
-            { id: 'all', label: 'Todos' },
-            { id: 'computo', label: 'Cómputo' },
-            { id: 'audiovisual', label: 'Audiovisual' },
-            { id: 'audio', label: 'Audio' },
-            { id: 'redes', label: 'Redes' }
-          ].map(cat => (
+        {/* Filtro por Categoría y Botón Admin */}
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-1.5 bg-[#0c1830] border border-white/20 p-1 rounded-xl">
+            {[
+              { id: 'all', label: 'Todos' },
+              { id: 'computo', label: 'Cómputo' },
+              { id: 'audiovisual', label: 'Audiovisual' },
+              { id: 'audio', label: 'Audio' },
+              { id: 'redes', label: 'Redes' }
+            ].map(cat => (
+              <button
+                key={cat.id}
+                onClick={() => setFilterCategory(cat.id)}
+                className={`px-3 py-1 rounded-lg text-xs font-medium transition ${
+                  filterCategory === cat.id
+                    ? 'bg-campus-teal/20 text-campus-teal border border-campus-teal/30 font-semibold'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+
+          {role === 'admin' && onOpenCreateModal && (
             <button
-              key={cat.id}
-              onClick={() => setFilterCategory(cat.id)}
-              className={`px-3 py-1 rounded-lg text-xs font-medium transition ${
-                filterCategory === cat.id
-                  ? 'bg-campus-teal/20 text-campus-teal border border-campus-teal/30 font-semibold'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
+              onClick={onOpenCreateModal}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-campus-teal to-campus-blue hover:opacity-90 text-white shadow-md shadow-teal-500/20 transition active:scale-95 whitespace-nowrap"
             >
-              {cat.label}
+              <PlusCircle className="w-3.5 h-3.5" />
+              <span>Nuevo Equipo</span>
             </button>
-          ))}
+          )}
         </div>
       </div>
 

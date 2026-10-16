@@ -56,3 +56,13 @@ export const updateSpaceStatus = async (id: string, estado: string): Promise<Esp
   const { data } = await api.patch(`/spaces/${id}/status`, { estado });
   return data;
 };
+
+export const createSpace = async (space: { nombre: string; tipo: string; capacidad: number; ubicacion: string }): Promise<Espacio> => {
+  const { data } = await api.post('/spaces', space);
+  return data;
+};
+
+export const createResource = async (resource: { nombre: string; categoria: string; serial: string; ubicacion_actual: string }): Promise<Recurso> => {
+  const { data } = await api.post('/resources', resource);
+  return data;
+};
