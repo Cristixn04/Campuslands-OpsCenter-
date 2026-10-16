@@ -52,14 +52,18 @@ select option:hover, select option:checked {
 
 input[type="date"]::-webkit-calendar-picker-indicator,
 input[type="datetime-local"]::-webkit-calendar-picker-indicator {
-  filter: invert(1);
+  filter: invert(0.8) sepia(1) saturate(5) hue-rotate(130deg) brightness(1.7);
+  opacity: 1 !important;
   cursor: pointer;
-  opacity: 0.85;
+  transform: scale(1.15);
+  transition: filter 0.2s ease, transform 0.2s ease;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator:hover,
 input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
-  opacity: 1;
+  filter: invert(0.8) sepia(1) saturate(5) hue-rotate(130deg) brightness(2) drop-shadow(0 0 6px rgba(0, 229, 255, 0.9));
+  transform: scale(1.2);
+  opacity: 1 !important;
 }
 
 /* Custom Cosmic Scrollbar */

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CalendarPlus, AlertTriangle, Users, Laptop, CheckCircle2, X } from 'lucide-react';
+import { CalendarPlus, AlertTriangle, Users, Laptop, CheckCircle2, X, Briefcase, User } from 'lucide-react';
 import { Espacio, Recurso, Reserva } from '../../types';
 import { UserRole } from '../layout/Navbar';
 
@@ -13,10 +13,12 @@ interface ReservationFormProps {
   isLoading: boolean;
 }
 
+const CARGOS = ['Trainer', 'Administrador', 'Teacher de ingles', 'Comerciales', 'HUBUX'] as const;
+
 export const ReservationForm: React.FC<ReservationFormProps> = ({
   spaces,
   resources,
-  role,
+  role: _role,
   preselectedSpaceId,
   onClose,
   onSubmitReservation,
@@ -24,9 +26,10 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
 }) => {
   const [spaceId, setSpaceId] = useState(preselectedSpaceId || '');
   const [resourceId, setResourceId] = useState('');
-  const [applicant, setApplicant] = useState(role === 'client' ? 'Camper Juan Pérez / Cohorte 2026' : 'Trainer / Operaciones');
+  const [applicantCargo, setApplicantCargo] = useState('');
+  const [applicantName, setApplicantName] = useState('');
   const [reason, setReason] = useState('');
-  const [attendees, setAttendees] = useState<number>(10);
+  const [attendees, setAttendees] = useState<number | ''>('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -34,7 +37,7 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
   const selectedSpace = spaces.find(s => s.id === spaceId);
 
   // Validación reactiva de aforo en tiempo real (Regla 1 en el cliente)
-  const isOverCapacity = selectedSpace ? attendees > selectedSpace.capacidad : false;
+  const isOverCapacity = selectedSpace && attendees !== '' ? Number(attendees) > selectedSpace.capacidad : false;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,6 +48,21 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
       return;
     }
 
+    if (!applicantCargo) {
+      setValidationError('Debes seleccionar tu cargo o rol institucional (Trainer, Administrador, etc.).');
+      return;
+    }
+
+    if (!applicantName.trim()) {
+      setValidationError('Debes ingresar el nombre del solicitante / responsable.');
+      return;
+    }
+
+    if (attendees === '' || Number(attendees) <= 0) {
+      setValidationError('Debes indicar un número válido de asistentes.');
+      return;
+    }
+
     if (selectedSpace && selectedSpace.estado === 'inhabilitado') {
       setValidationError(`El espacio '${selectedSpace.nombre}' está inhabilitado por incidentes y no puede ser reservado.`);
       return;
@@ -52,6 +70,11 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
 
     if (isOverCapacity && selectedSpace) {
       setValidationError(`Conflicto de Aforo: La sala '${selectedSpace.nombre}' tiene aforo de ${selectedSpace.capacidad} personas. No se permiten ${attendees} asistentes.`);
+      return;
+    }
+
+    if (!reason.trim()) {
+      setValidationError('Debes indicar el motivo o actividad de la reserva.');
       return;
     }
 
@@ -71,8 +94,8 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
       await onSubmitReservation({
         espacio_id: spaceId,
         recurso_id: resourceId || undefined,
-        solicitante: applicant,
-        motivo: reason || 'Sesión de aprendizaje / Desarrollo Tech',
+        solicitante: `${applicantName.trim()} (${applicantCargo})`,
+        motivo: reason.trim() || 'Sesión de aprendizaje / Desarrollo Tech',
         asistentes: Number(attendees),
         fecha_inicio: start.toISOString(),
         fecha_fin: end.toISOString()
@@ -141,12 +164,72 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
           </select>
         </div>
 
+        {/* Cargo / Rol Institucional */}
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <label className="text-xs font-medium text-slate-200 flex items-center gap-1.5">
+              <Briefcase className="w-3.5 h-3.5 text-campus-teal" />
+              <span>Cargo / Rol del Solicitante *</span>
+            </label>
+            {applicantCargo && (
+              <span className="text-[11px] font-mono text-campus-teal bg-campus-teal/10 px-2 py-0.5 rounded-md border border-campus-teal/20">
+                {applicantCargo}
+              </span>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {CARGOS.map((cargo) => {
+              const isSelected = applicantCargo === cargo;
+              return (
+                <button
+                  key={cargo}
+                  type="button"
+                  onClick={() => setApplicantCargo(cargo)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all duration-200 border flex items-center gap-1.5 cursor-pointer active:scale-95 ${
+                    isSelected
+                      ? 'bg-campus-teal/20 border-campus-teal text-campus-teal shadow-[0_0_12px_rgba(84,198,170,0.3)] ring-1 ring-campus-teal font-semibold'
+                      : 'bg-[#0c1830] border-white/15 text-slate-300 hover:border-campus-teal/40 hover:bg-white/5 hover:text-white'
+                  }`}
+                >
+                  <span
+                    className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                      isSelected ? 'bg-campus-teal animate-pulse' : 'bg-slate-500'
+                    }`}
+                  />
+                  <span>{cargo}</span>
+                </button>
+              );
+            })}
+          </div>
+          {!applicantCargo && (
+            <p className="text-[10px] text-slate-400 mt-1">
+              Selecciona tu cargo en el campus para asociarlo a la solicitud.
+            </p>
+          )}
+        </div>
+
+        {/* Nombre del Solicitante */}
+        <div>
+          <label className="block text-xs font-medium text-slate-200 mb-1.5 flex items-center gap-1.5">
+            <User className="w-3.5 h-3.5 text-campus-cyan" />
+            <span>Nombre de la Persona Solicitante *</span>
+          </label>
+          <input
+            type="text"
+            value={applicantName}
+            onChange={(e) => setApplicantName(e.target.value)}
+            placeholder="Ej. Juan Pérez o María Gómez"
+            className="w-full bg-[#0c1830] border border-white/20 rounded-xl p-2.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-campus-teal focus:ring-1 focus:ring-campus-teal/30"
+            required
+          />
+        </div>
+
         {/* Asistentes con Validación Reactiva */}
         <div>
           <div className="flex items-center justify-between mb-1.5">
             <label className="text-xs font-medium text-slate-200 flex items-center gap-1.5">
               <Users className="w-3.5 h-3.5 text-campus-cyan" />
-              Número de Asistentes *
+              <span>Número de Asistentes *</span>
             </label>
             {selectedSpace && (
               <span className={`text-[11px] font-mono ${isOverCapacity ? 'text-campus-danger font-bold' : 'text-slate-400'}`}>
@@ -158,8 +241,12 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
             type="number"
             min={1}
             value={attendees}
-            onChange={(e) => setAttendees(Number(e.target.value))}
-            className={`w-full bg-[#0c1830] border rounded-xl p-2.5 text-xs text-white focus:outline-none transition ${
+            onChange={(e) => {
+              const val = e.target.value;
+              setAttendees(val === '' ? '' : Math.max(0, parseInt(val, 10) || 0));
+            }}
+            placeholder="Ej. 10"
+            className={`w-full bg-[#0c1830] border rounded-xl p-2.5 text-xs text-white placeholder-slate-400 focus:outline-none transition ${
               isOverCapacity 
                 ? 'border-campus-danger text-campus-danger focus:ring-1 focus:ring-campus-danger' 
                 : 'border-white/20 focus:border-campus-teal focus:ring-1 focus:ring-campus-teal/30'
@@ -168,7 +255,7 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
           />
           {isOverCapacity && selectedSpace && (
             <p className="text-[11px] text-campus-danger mt-1 flex items-center gap-1">
-              <AlertTriangle className="w-3.5 h-3.5" />
+              <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
               <span>Supera el aforo máximo de {selectedSpace.nombre} ({selectedSpace.capacidad}). Por favor reduce asistentes o elige otra sala.</span>
             </p>
           )}
@@ -192,21 +279,6 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
               </option>
             ))}
           </select>
-        </div>
-
-        {/* Solicitante */}
-        <div>
-          <label className="block text-xs font-medium text-slate-200 mb-1.5">
-            Nombre del Solicitante / Responsable *
-          </label>
-          <input
-            type="text"
-            value={applicant}
-            onChange={(e) => setApplicant(e.target.value)}
-            placeholder="Ej. Camper / Trainer"
-            className="w-full bg-[#0c1830] border border-white/20 rounded-xl p-2.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-campus-teal focus:ring-1 focus:ring-campus-teal/30"
-            required
-          />
         </div>
 
         {/* Motivo */}

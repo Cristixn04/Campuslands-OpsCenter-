@@ -22,7 +22,7 @@ import {
   createSpace,
   createResource
 } from './api/client';
-import { Navbar, UserRole } from './components/layout/Navbar';
+import { Navbar } from './components/layout/Navbar';
 import { MetricsSummary } from './components/layout/MetricsSummary';
 import { SpaceGrid } from './components/spaces/SpaceGrid';
 import { CalendarTimeline } from './components/calendar/CalendarTimeline';
@@ -32,9 +32,15 @@ import { ReservationForm } from './components/reservations/ReservationForm';
 import { CosmicBackground } from './components/common/CosmicBackground';
 import { CreateSpaceModal } from './components/admin/CreateSpaceModal';
 import { CreateResourceModal } from './components/admin/CreateResourceModal';
+import { authService, User, UserRole } from './services/authService';
+import { AuthScreen } from './components/auth/AuthScreen';
 
 export default function App() {
-  const [currentRole, setCurrentRole] = useState<UserRole>('client');
+  const [currentUser, setCurrentUser] = useState<User | null>(() => authService.getCurrentUser());
+  const [currentRole, setCurrentRole] = useState<UserRole>(() => {
+    const user = authService.getCurrentUser();
+    return user ? user.role : 'client';
+  });
   const [activeTab, setActiveTab] = useState<'spaces' | 'agenda' | 'incidents' | 'resources'>('spaces');
 
   const [spaces, setSpaces] = useState<Espacio[]>([]);
@@ -74,8 +80,21 @@ export default function App() {
   };
 
   useEffect(() => {
-    loadAllData();
-  }, []);
+    if (currentUser) {
+      loadAllData();
+    }
+  }, [currentUser]);
+
+  // Manejadores de Autenticación
+  const handleLoginSuccess = (user: User) => {
+    setCurrentUser(user);
+    setCurrentRole(user.role);
+  };
+
+  const handleLogout = () => {
+    authService.logout();
+    setCurrentUser(null);
+  };
 
   // Manejo de Reporte de Incidencias con IA
   const handleReportIncident = async (descripcion: string) => {
@@ -216,18 +235,30 @@ export default function App() {
     setIsModalOpen(true);
   };
 
+  // Si no hay sesión activa, muestra la pantalla cósmica de Login / Registro
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen bg-[#010206] text-slate-100 flex flex-col font-sans selection:bg-campus-teal selection:text-black relative overflow-x-hidden">
+        <CosmicBackground />
+        <AuthScreen onLoginSuccess={handleLoginSuccess} />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#010206] text-slate-100 flex flex-col font-sans selection:bg-campus-teal selection:text-black relative overflow-x-hidden">
       {/* Fondo Animado Cósmico con Estrellas Titilantes y Meteoros Diagonales */}
       <CosmicBackground />
 
       <div className="relative z-10 flex flex-col min-h-screen">
-        {/* Navbar Superior con Ticker y Role Switcher */}
+        {/* Navbar Superior con Ticker, Role Switcher y User Chip */}
         <Navbar
           currentRole={currentRole}
           onRoleChange={(role) => setCurrentRole(role)}
           onSync={loadAllData}
           isLoading={loading}
+          currentUser={currentUser}
+          onLogout={handleLogout}
         />
 
         {/* Contenido Principal */}
@@ -412,18 +443,18 @@ export default function App() {
           isLoading={actionLoading}
         />
 
-      {/* Footer Cósmico Oficial */}
-      <footer className="border-t border-white/5 bg-black/40 py-6 px-3.5 sm:px-6 mt-12 text-center text-xs text-slate-500 font-mono">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
-          <p>© 2026 CAMPUSLANDS // SISTEMA CENTRAL DE GESTIÓN OPERATIVA</p>
-          <div className="flex items-center gap-4 text-slate-400">
-            <span>Desarrollado por Cristian (Frontend) y Samuel (Backend)</span>
-            <span>•</span>
-            <span className="text-campus-teal">#GoForIt</span>
+        {/* Footer Cósmico Oficial */}
+        <footer className="border-t border-white/5 bg-black/40 py-6 px-3.5 sm:px-6 mt-12 text-center text-xs text-slate-500 font-mono">
+          <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+            <p>© 2026 CAMPUSLANDS // SISTEMA CENTRAL DE GESTIÓN OPERATIVA</p>
+            <div className="flex items-center gap-4 text-slate-400">
+              <span>Desarrollado por Cristian (Frontend) y Samuel (Backend)</span>
+              <span>•</span>
+              <span className="text-campus-teal">#GoForIt</span>
+            </div>
           </div>
-        </div>
-      </footer>
+        </footer>
+      </div>
     </div>
-  </div>
-);
+  );
 }
