@@ -51,3 +51,8 @@ export const getQrUrl = async (tipo: string, id_item: string): Promise<{ payload
 };
 
 export default api;
+
+export const updateSpaceStatus = async (id: string, estado: string): Promise<Espacio> => {
+  const { data } = await api.patch(`/spaces/${id}/status`, { estado });
+  return data;
+};
