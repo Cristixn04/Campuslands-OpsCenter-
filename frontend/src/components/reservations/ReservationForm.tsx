@@ -39,12 +39,17 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
   // Validación reactiva de aforo en tiempo real (Regla 1 en el cliente)
   const isOverCapacity = selectedSpace && attendees !== '' ? Number(attendees) > selectedSpace.capacidad : false;
 
+  // Fecha mínima seleccionable: hoy y ahora
+  const nowISOString = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 16);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setValidationError(null);
 
     if (!spaceId) {
-      setValidationError('Debes seleccionar un espacio.');
+      setValidationError('Debes seleccionar un espacio para la reserva.');
       return;
     }
 
@@ -53,13 +58,20 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
       return;
     }
 
-    if (!applicantName.trim()) {
-      setValidationError('Debes ingresar el nombre del solicitante / responsable.');
+    const cleanName = applicantName.trim();
+    if (!cleanName || cleanName.length < 3) {
+      setValidationError('El nombre del solicitante debe tener al menos 3 caracteres.');
       return;
     }
 
-    if (attendees === '' || Number(attendees) <= 0) {
-      setValidationError('Debes indicar un número válido de asistentes.');
+    if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(cleanName)) {
+      setValidationError('El nombre del solicitante solo puede contener letras y espacios.');
+      return;
+    }
+
+    const numAttendees = Number(attendees);
+    if (attendees === '' || isNaN(numAttendees) || numAttendees <= 0) {
+      setValidationError('Debes indicar un número válido de asistentes (mínimo 1).');
       return;
     }
 
@@ -69,12 +81,13 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
     }
 
     if (isOverCapacity && selectedSpace) {
-      setValidationError(`Conflicto de Aforo: La sala '${selectedSpace.nombre}' tiene aforo de ${selectedSpace.capacidad} personas. No se permiten ${attendees} asistentes.`);
+      setValidationError(`Conflicto de Aforo: La sala '${selectedSpace.nombre}' tiene aforo máximo de ${selectedSpace.capacidad} personas. No se permiten ${attendees} asistentes.`);
       return;
     }
 
-    if (!reason.trim()) {
-      setValidationError('Debes indicar el motivo o actividad de la reserva.');
+    const cleanReason = reason.trim();
+    if (!cleanReason || cleanReason.length < 5) {
+      setValidationError('Debes indicar un motivo o actividad descriptiva (mínimo 5 caracteres).');
       return;
     }
 
@@ -85,8 +98,26 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
 
     const start = new Date(startDate);
     const end = new Date(endDate);
+    const now = new Date(Date.now() - 5 * 60 * 1000); // 5 min de gracia por desfase de reloj
+
+    if (start < now) {
+      setValidationError('No puedes programar reservas en fechas u horas del pasado.');
+      return;
+    }
+
     if (start >= end) {
-      setValidationError('La fecha de inicio debe ser anterior a la de finalización.');
+      setValidationError('La hora de finalización debe ser posterior a la de inicio.');
+      return;
+    }
+
+    const durationMinutes = (end.getTime() - start.getTime()) / (1000 * 60);
+    if (durationMinutes < 15) {
+      setValidationError('La duración mínima de una reserva es de 15 minutos.');
+      return;
+    }
+
+    if (durationMinutes > 14 * 60) {
+      setValidationError('Una reserva no puede exceder las 14 horas consecutivas.');
       return;
     }
 
@@ -94,15 +125,15 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
       await onSubmitReservation({
         espacio_id: spaceId,
         recurso_id: resourceId || undefined,
-        solicitante: `${applicantName.trim()} (${applicantCargo})`,
-        motivo: reason.trim() || 'Sesión de aprendizaje / Desarrollo Tech',
-        asistentes: Number(attendees),
+        solicitante: `${cleanName} (${applicantCargo})`,
+        motivo: cleanReason,
+        asistentes: numAttendees,
         fecha_inicio: start.toISOString(),
         fecha_fin: end.toISOString()
       });
       if (onClose) onClose();
     } catch (err: any) {
-      setValidationError(err.response?.data?.detail || 'Error al procesar la reserva.');
+      setValidationError(err.response?.data?.detail || 'Error al procesar la reserva. Verifica posibles solapamientos.');
     }
   };
 
@@ -305,6 +336,7 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
             <input
               type="datetime-local"
               value={startDate}
+              min={nowISOString}
               onChange={(e) => setStartDate(e.target.value)}
               className="w-full bg-[#0c1830] border border-white/20 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-campus-teal focus:ring-1 focus:ring-campus-teal/30 cursor-pointer"
               required
@@ -317,6 +349,7 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
             <input
               type="datetime-local"
               value={endDate}
+              min={startDate || nowISOString}
               onChange={(e) => setEndDate(e.target.value)}
               className="w-full bg-[#0c1830] border border-white/20 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-campus-teal focus:ring-1 focus:ring-campus-teal/30 cursor-pointer"
               required

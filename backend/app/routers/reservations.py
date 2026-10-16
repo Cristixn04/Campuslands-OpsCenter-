@@ -116,3 +116,24 @@ def crear_reserva(data: ReservaIn, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(nueva_reserva)
     return nueva_reserva
+
+@router.patch("/{reserva_id}/cancel", response_model=ReservaOut)
+def cancelar_reserva(reserva_id: int, db: Session = Depends(get_db)):
+    reserva = db.query(Reserva).filter(Reserva.id == reserva_id).first()
+    if not reserva:
+        raise HTTPException(status_code=404, detail="La reserva solicitada no existe.")
+    
+    reserva.estado = "cancelada"
+    db.commit()
+    db.refresh(reserva)
+    return reserva
+
+@router.delete("/{reserva_id}", status_code=status.HTTP_204_NO_CONTENT)
+def eliminar_reserva(reserva_id: int, db: Session = Depends(get_db)):
+    reserva = db.query(Reserva).filter(Reserva.id == reserva_id).first()
+    if not reserva:
+        raise HTTPException(status_code=404, detail="La reserva solicitada no existe.")
+    
+    db.delete(reserva)
+    db.commit()
+    return None

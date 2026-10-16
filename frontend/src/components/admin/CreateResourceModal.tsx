@@ -76,20 +76,28 @@ export const CreateResourceModal: React.FC<CreateResourceModalProps> = ({
     e.preventDefault();
     setError(null);
 
-    if (!nombre.trim()) {
-      setError('El nombre del equipo es obligatorio.');
-      return;
-    }
-    if (!serial.trim()) {
-      setError('El serial único del equipo es obligatorio.');
-      return;
-    }
-    if (!ubicacionActual.trim()) {
-      setError('La ubicación o sala de custodia es obligatoria.');
+    const cleanNombre = nombre.trim();
+    if (!cleanNombre || cleanNombre.length < 3) {
+      setError('El nombre del equipo debe tener al menos 3 caracteres.');
       return;
     }
 
     const cleanSerial = serial.trim().toUpperCase();
+    if (!cleanSerial || cleanSerial.length < 3) {
+      setError('El serial único debe tener al menos 3 caracteres.');
+      return;
+    }
+
+    if (!/^[A-Z0-9\-_]+$/.test(cleanSerial)) {
+      setError('El serial solo puede contener letras, números, guiones y guiones bajos.');
+      return;
+    }
+
+    const cleanUbicacion = ubicacionActual.trim();
+    if (!cleanUbicacion || cleanUbicacion.length < 3) {
+      setError('La ubicación o sala de custodia debe tener al menos 3 caracteres.');
+      return;
+    }
 
     try {
       await onCreateResource({

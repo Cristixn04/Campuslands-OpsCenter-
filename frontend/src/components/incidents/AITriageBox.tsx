@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, ShieldAlert, CheckCircle2, Clock, RefreshCw, Send, HelpCircle } from 'lucide-react';
+import { Sparkles, ShieldAlert, CheckCircle2, Clock, RefreshCw, Send, HelpCircle, AlertTriangle } from 'lucide-react';
 import { Incidencia, Espacio } from '../../types';
 import { UserRole } from '../layout/Navbar';
 
@@ -22,16 +22,28 @@ export const AITriageBox: React.FC<AITriageBoxProps> = ({
 }) => {
   const [description, setDescription] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'open' | 'resolved'>('all');
+  const [formError, setFormError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!description.trim() || isLoading) return;
-    await onReportIncident(description);
-    setDescription('');
+    setFormError(null);
+    const cleanDesc = description.trim();
+    if (!cleanDesc || cleanDesc.length < 10) {
+      setFormError('Por favor describe la incidencia con mayor detalle (mínimo 10 caracteres).');
+      return;
+    }
+    if (isLoading) return;
+    try {
+      await onReportIncident(cleanDesc);
+      setDescription('');
+    } catch (err: any) {
+      setFormError(err?.response?.data?.detail || err?.message || 'Error al enviar el reporte.');
+    }
   };
 
   const handleQuickPrompt = (text: string) => {
     setDescription(text);
+    setFormError(null);
   };
 
   const filteredIncidents = incidents.filter(inc => {
@@ -88,6 +100,12 @@ export const AITriageBox: React.FC<AITriageBoxProps> = ({
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {formError && (
+            <div className="p-3 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 shrink-0 text-rose-400" />
+              <span>{formError}</span>
+            </div>
+          )}
           <div>
             <label className="block text-xs font-medium text-slate-300 mb-1.5">
               Descripción del Evento / Incidente *

@@ -5,7 +5,6 @@ import {
   User as UserIcon, 
   ShieldCheck, 
   UserCheck, 
-  Zap, 
   AlertCircle, 
   Sparkles, 
   Eye, 
@@ -60,19 +59,31 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
     }
   };
 
+  const validateEmailFormat = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
   // Login normal
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg(null);
 
-    if (!loginEmail.trim() || !loginPassword.trim()) {
+    const cleanEmail = loginEmail.trim();
+    const cleanPassword = loginPassword.trim();
+
+    if (!cleanEmail || !cleanPassword) {
       setErrorMsg('Por favor ingresa tu correo y contraseña.');
+      return;
+    }
+
+    if (!validateEmailFormat(cleanEmail)) {
+      setErrorMsg('Ingresa un formato de correo electrónico válido (ej. usuario@campuslands.com).');
       return;
     }
 
     try {
       setIsLoading(true);
-      const user = await authService.login(loginEmail, loginPassword);
+      const user = await authService.login(cleanEmail, cleanPassword);
       onLoginSuccess(user);
     } catch (err: any) {
       setErrorMsg(err.message || 'Error al iniciar sesión.');
@@ -81,33 +92,49 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
     }
   };
 
-  // Registro
+  // Registro con validaciones robustas
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg(null);
 
-    if (!regNombre.trim()) {
-      setErrorMsg('Por favor ingresa tu nombre completo.');
+    const cleanNombre = regNombre.trim();
+    const cleanEmail = regEmail.trim();
+
+    if (!cleanNombre || cleanNombre.length < 3) {
+      setErrorMsg('El nombre completo debe tener al menos 3 caracteres.');
       return;
     }
-    if (!regEmail.trim()) {
+
+    if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(cleanNombre)) {
+      setErrorMsg('El nombre solo puede contener letras y espacios.');
+      return;
+    }
+
+    if (!cleanEmail) {
       setErrorMsg('Por favor ingresa tu correo institucional.');
       return;
     }
+
+    if (!validateEmailFormat(cleanEmail)) {
+      setErrorMsg('El correo ingresado no tiene un formato válido.');
+      return;
+    }
+
     if (regPassword.length < 6) {
       setErrorMsg('La contraseña debe tener al menos 6 caracteres.');
       return;
     }
+
     if (regPassword !== regConfirmPassword) {
-      setErrorMsg('Las contraseñas no coinciden. Verifícalas.');
+      setErrorMsg('Las contraseñas no coinciden. Verifícalas cuidadosamente.');
       return;
     }
 
     try {
       setIsLoading(true);
       const user = await authService.register({
-        nombre: regNombre,
-        email: regEmail,
+        nombre: cleanNombre,
+        email: cleanEmail,
         password: regPassword,
         role: regRole,
         cargo: regCargo
@@ -117,17 +144,6 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
       setErrorMsg(err.message || 'Error al crear la cuenta.');
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  // Acceso Rápido Demo (Jurado / Testing instantáneo)
-  const handleQuickDemo = (role: UserRole) => {
-    setErrorMsg(null);
-    try {
-      const user = authService.loginDemo(role);
-      onLoginSuccess(user);
-    } catch (err: any) {
-      setErrorMsg('Error al activar el acceso de prueba.');
     }
   };
 
@@ -275,61 +291,6 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
                 )}
               </button>
             </form>
-
-            {/* Separador Cósmico */}
-            <div className="relative my-4 flex items-center justify-center">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-white/10" />
-              </div>
-              <span className="relative px-3 bg-[#060c1a] text-[10px] font-mono tracking-wider text-slate-400 uppercase">
-                ⚡ Accesos Demo Instantáneos (Jurado)
-              </span>
-            </div>
-
-            {/* Botones de Acceso Rápido para Testing / Jurado */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              <button
-                type="button"
-                onClick={() => handleQuickDemo('client')}
-                className="group p-3 rounded-xl bg-[#030712] hover:bg-campus-teal/10 border border-white/10 hover:border-campus-teal/40 text-left transition flex items-center justify-between shadow-sm active:scale-[0.98]"
-              >
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-campus-teal/15 text-campus-teal flex items-center justify-center group-hover:scale-110 transition">
-                    <Zap className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-semibold text-white group-hover:text-campus-teal transition">
-                      Camper / Trainer
-                    </div>
-                    <div className="text-[10px] text-slate-400 font-mono">
-                      camper@campuslands.com
-                    </div>
-                  </div>
-                </div>
-                <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-campus-teal group-hover:translate-x-0.5 transition" />
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleQuickDemo('admin')}
-                className="group p-3 rounded-xl bg-[#030712] hover:bg-campus-purple/10 border border-white/10 hover:border-campus-purple/40 text-left transition flex items-center justify-between shadow-sm active:scale-[0.98]"
-              >
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-campus-purple/15 text-campus-purple flex items-center justify-center group-hover:scale-110 transition">
-                    <ShieldCheck className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-semibold text-white group-hover:text-campus-purple transition">
-                      Administrador
-                    </div>
-                    <div className="text-[10px] text-slate-400 font-mono">
-                      admin@campuslands.com
-                    </div>
-                  </div>
-                </div>
-                <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-campus-purple group-hover:translate-x-0.5 transition" />
-              </button>
-            </div>
           </div>
         )}
 
