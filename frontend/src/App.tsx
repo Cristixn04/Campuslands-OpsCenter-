@@ -217,7 +217,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#02050e] text-slate-100 flex flex-col font-sans selection:bg-campus-teal selection:text-black relative overflow-x-hidden">
+    <div className="min-h-screen bg-[#010206] text-slate-100 flex flex-col font-sans selection:bg-campus-teal selection:text-black relative overflow-x-hidden">
       {/* Fondo Animado Cósmico con Estrellas Titilantes y Meteoros Diagonales */}
       <CosmicBackground />
 
@@ -339,8 +339,8 @@ export default function App() {
             </div>
           </div>
 
-          {/* Vista Activa */}
-          <div>
+          {/* Vista Activa con animación de despliegue */}
+          <div key={activeTab} className="animate-in fade-in duration-300 slide-in-from-bottom-2">
             {activeTab === 'spaces' && (
               <SpaceGrid
                 spaces={spaces}

@@ -12,23 +12,32 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ currentRole, onRoleChange, onSync, isLoading }) => {
   return (
-    <header className="border-b border-white/10 bg-[#030816]/90 backdrop-blur-2xl sticky top-0 z-50 shadow-2xl">
+    <header className="border-b border-white/10 bg-[#010206]/85 backdrop-blur-2xl sticky top-0 z-50 shadow-2xl">
       {/* Ticker estilo Terminal Campuslands */}
-      <div className="border-b border-white/5 bg-black/50 py-1 px-6 overflow-hidden select-none">
+      <div className="border-b border-white/5 bg-black/60 py-1.5 px-6 overflow-hidden select-none">
         <div className="max-w-7xl mx-auto flex items-center justify-between text-[11px] font-mono tracking-[0.2em] text-slate-400">
           <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-campus-teal animate-pulse"></span>
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-campus-teal opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-campus-teal"></span>
+            </span>
             <span className="text-campus-teal font-semibold">CAMPUSLANDS OPS</span>
             <span className="text-white/30">//</span>
             <span className="hidden sm:inline">NODO CENTRAL OPERATIVO</span>
             <span className="text-white/30 hidden sm:inline">//</span>
-            <span className="text-campus-cyan hidden md:inline">GEMINI 3.8 FLASH COPILOT ONLINE</span>
+            <span className="text-campus-cyan hidden md:inline-flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-campus-cyan animate-pulse"></span>
+              GEMINI 3.8 FLASH COPILOT ONLINE
+            </span>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-white/40 hidden lg:inline">AFORO: 306 CAMPERS</span>
             <span className="text-white/30 hidden lg:inline">//</span>
             <span className="text-emerald-400 font-semibold flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
               SISTEMA NOMINAL
             </span>
           </div>
@@ -46,7 +55,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentRole, onRoleChange, onSyn
               <img
                 src="/casco_azul.svg"
                 alt="Campuslands Helmet"
-                className="relative w-8 h-8 object-contain transition-transform duration-300 group-hover:scale-105"
+                className="relative w-8 h-8 object-contain transition-transform duration-300 group-hover:scale-110 animate-float"
               />
             </div>
             {/* Texto Oficial Campuslands */}

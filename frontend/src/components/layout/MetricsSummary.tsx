@@ -19,61 +19,61 @@ export const MetricsSummary: React.FC<MetricsSummaryProps> = ({ spaces, resource
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 mb-6">
       {/* KPI 1: Salas Operativas */}
-      <div className="glass-panel rounded-2xl p-4 relative overflow-hidden group hover:border-campus-teal/40 transition-all duration-300">
+      <div className="glass-panel rounded-2xl p-4 relative overflow-hidden group hover:border-campus-teal/50 hover:-translate-y-1 hover:shadow-lg hover:shadow-campus-teal/10 transition-all duration-300">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-[11px] font-mono tracking-wider uppercase text-slate-400">Salas Disponibles</span>
-          <div className="p-2 rounded-xl bg-campus-teal/10 text-campus-teal border border-campus-teal/20">
+          <span className="text-[11px] font-mono tracking-wider uppercase text-slate-300 font-medium">Salas Disponibles</span>
+          <div className="p-2 rounded-xl bg-campus-teal/10 text-campus-teal border border-campus-teal/20 group-hover:scale-110 transition duration-300">
             <Building2 className="w-4 h-4" />
           </div>
         </div>
         <div className="flex items-baseline gap-2">
           <span className="text-2xl font-bold font-mono text-white">{espaciosDisponibles}</span>
-          <span className="text-xs text-slate-400">/ {spaces.length} espacios</span>
+          <span className="text-xs text-slate-300">/ {spaces.length} espacios</span>
         </div>
         {espaciosInhabilitados > 0 && (
-          <p className="text-[10px] text-campus-danger font-medium mt-1">
+          <p className="text-[10px] text-campus-danger font-semibold mt-1">
             ⚠️ {espaciosInhabilitados} sala(s) inhabilitada(s)
           </p>
         )}
       </div>
 
       {/* KPI 2: Aforo Total Instalado */}
-      <div className="glass-panel rounded-2xl p-4 relative overflow-hidden group hover:border-campus-cyan/40 transition-all duration-300">
+      <div className="glass-panel rounded-2xl p-4 relative overflow-hidden group hover:border-campus-cyan/50 hover:-translate-y-1 hover:shadow-lg hover:shadow-cyan-500/10 transition-all duration-300">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-[11px] font-mono tracking-wider uppercase text-slate-400">Capacidad Oficial</span>
-          <div className="p-2 rounded-xl bg-campus-cyan/10 text-campus-cyan border border-campus-cyan/20">
+          <span className="text-[11px] font-mono tracking-wider uppercase text-slate-300 font-medium">Capacidad Oficial</span>
+          <div className="p-2 rounded-xl bg-campus-cyan/10 text-campus-cyan border border-campus-cyan/20 group-hover:scale-110 transition duration-300">
             <Users className="w-4 h-4" />
           </div>
         </div>
         <div className="flex items-baseline gap-2">
           <span className="text-2xl font-bold font-mono text-white">{totalCapacidad}</span>
-          <span className="text-xs text-slate-400">campers max</span>
+          <span className="text-xs text-slate-300">campers max</span>
         </div>
-        <p className="text-[10px] text-slate-400 mt-1">Aforo validado por Regla 1</p>
+        <p className="text-[10px] text-slate-400 mt-1">Aforo validado en tiempo real</p>
       </div>
 
       {/* KPI 3: Equipos Disponibles */}
-      <div className="glass-panel rounded-2xl p-4 relative overflow-hidden group hover:border-campus-blue/40 transition-all duration-300">
+      <div className="glass-panel rounded-2xl p-4 relative overflow-hidden group hover:border-campus-blue/50 hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-[11px] font-mono tracking-wider uppercase text-slate-400">Recursos en Stock</span>
-          <div className="p-2 rounded-xl bg-campus-blue/10 text-campus-blue border border-campus-blue/20">
+          <span className="text-[11px] font-mono tracking-wider uppercase text-slate-300 font-medium">Recursos en Stock</span>
+          <div className="p-2 rounded-xl bg-campus-blue/10 text-campus-blue border border-campus-blue/20 group-hover:scale-110 transition duration-300">
             <Laptop className="w-4 h-4" />
           </div>
         </div>
         <div className="flex items-baseline gap-2">
           <span className="text-2xl font-bold font-mono text-white">{recursosDisponibles}</span>
-          <span className="text-xs text-slate-400">/ {resources.length} equipos</span>
+          <span className="text-xs text-slate-300">/ {resources.length} equipos</span>
         </div>
         <p className="text-[10px] text-slate-400 mt-1">Laptops, Proyectores & Audio</p>
       </div>
 
       {/* KPI 4: Estado Operativo e Incidentes */}
-      <div className={`glass-panel rounded-2xl p-4 relative overflow-hidden group transition-all duration-300 ${
-        incidentesCriticos > 0 ? 'border-campus-danger/50 bg-campus-danger/5' : 'hover:border-emerald-500/40'
+      <div className={`glass-panel rounded-2xl p-4 relative overflow-hidden group transition-all duration-300 hover:-translate-y-1 ${
+        incidentesCriticos > 0 ? 'border-campus-danger/50 bg-campus-danger/5 shadow-rose-950/20' : 'hover:border-emerald-500/50 hover:shadow-emerald-500/10'
       }`}>
         <div className="flex items-center justify-between mb-2">
-          <span className="text-[11px] font-mono tracking-wider uppercase text-slate-400">Alertas Operativas</span>
-          <div className={`p-2 rounded-xl ${
+          <span className="text-[11px] font-mono tracking-wider uppercase text-slate-300 font-medium">Alertas Operativas</span>
+          <div className={`p-2 rounded-xl transition duration-300 group-hover:scale-110 ${
             incidentesCriticos > 0 
               ? 'bg-campus-danger/20 text-campus-danger animate-pulse border border-campus-danger/30' 
               : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
@@ -85,7 +85,7 @@ export const MetricsSummary: React.FC<MetricsSummaryProps> = ({ spaces, resource
           <span className={`text-2xl font-bold font-mono ${incidentesCriticos > 0 ? 'text-campus-danger' : 'text-emerald-400'}`}>
             {incidentesCriticos}
           </span>
-          <span className="text-xs text-slate-400">bloqueos activos</span>
+          <span className="text-xs text-slate-300">bloqueos activos</span>
         </div>
         <p className="text-[10px] text-slate-400 mt-1">
           {incidentesCriticos > 0 ? 'Requiere atención de mantenimiento' : 'Operación normal sin bloqueos'}

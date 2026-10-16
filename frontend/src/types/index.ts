@@ -5,6 +5,7 @@ export interface Espacio {
   capacidad: number;
   ubicacion: string;
   estado: 'disponible' | 'ocupado' | 'inhabilitado';
+  imagen_url?: string;
 }
 
 export interface Recurso {

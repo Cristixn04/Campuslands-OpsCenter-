@@ -298,11 +298,11 @@ export const CalendarTimeline: React.FC<CalendarTimelineProps> = ({
         <div className="mt-6 pt-5 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
           {/* Navegador de Fecha */}
           <div className="flex items-center flex-wrap gap-2">
-            <div className="flex items-center bg-[#0c1830] rounded-xl border border-white/20 p-1 shadow-inner">
+            <div className="flex items-center bg-[#081226]/90 backdrop-blur-md rounded-xl border border-white/20 p-1 shadow-inner">
               <button
                 type="button"
                 onClick={() => handleNavigateDay(-1)}
-                className="p-1.5 rounded-lg hover:bg-white/10 text-slate-300 hover:text-white transition"
+                className="p-1.5 rounded-lg hover:bg-white/10 text-white hover:text-campus-teal transition"
                 title="Día anterior"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -311,10 +311,10 @@ export const CalendarTimeline: React.FC<CalendarTimelineProps> = ({
               <button
                 type="button"
                 onClick={handleGoToToday}
-                className={`px-3 py-1 rounded-lg text-xs font-semibold transition ${
+                className={`px-3.5 py-1 rounded-lg text-xs font-semibold transition-all ${
                   selectedDate === getTodayString() && !showAllDates
-                    ? 'bg-campus-teal text-slate-950 shadow-md font-bold'
-                    : 'text-slate-300 hover:text-white hover:bg-white/5'
+                    ? 'bg-gradient-to-r from-campus-teal to-campus-blue text-white shadow-md shadow-campus-teal/20 font-bold'
+                    : 'text-white hover:text-campus-teal hover:bg-white/10'
                 }`}
               >
                 Hoy
@@ -323,7 +323,7 @@ export const CalendarTimeline: React.FC<CalendarTimelineProps> = ({
               <button
                 type="button"
                 onClick={() => handleNavigateDay(1)}
-                className="p-1.5 rounded-lg hover:bg-white/10 text-slate-300 hover:text-white transition"
+                className="p-1.5 rounded-lg hover:bg-white/10 text-white hover:text-campus-teal transition"
                 title="Día siguiente"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -349,7 +349,7 @@ export const CalendarTimeline: React.FC<CalendarTimelineProps> = ({
               className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition ${
                 showAllDates
                   ? 'bg-campus-purple/20 border-campus-purple text-purple-200 font-semibold'
-                  : 'bg-campus-deep/80 border-white/10 text-slate-400 hover:text-slate-200'
+                  : 'bg-[#081226]/90 border-white/20 text-white hover:text-campus-teal hover:bg-white/10'
               }`}
             >
               <CalendarDays className="w-3.5 h-3.5 inline mr-1.5 text-campus-purple" />
