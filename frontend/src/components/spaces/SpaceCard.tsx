@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Users, 
   MapPin, 
@@ -26,6 +26,12 @@ export const SpaceCard: React.FC<SpaceCardProps> = ({
   onToggleStatusAdmin
 }) => {
   const [imageError, setImageError] = useState<boolean>(false);
+  const [urlIndex, setUrlIndex] = useState<number>(0);
+
+  useEffect(() => {
+    setImageError(false);
+    setUrlIndex(0);
+  }, [space.id, space.nombre, space.imagen_url]);
 
   const isInhabilitado = space.estado === 'inhabilitado';
   const isOcupado = space.estado === 'ocupado';
@@ -65,6 +71,25 @@ export const SpaceCard: React.FC<SpaceCardProps> = ({
     }
   };
 
+  // Mapa explícito directo de fotos subidas en public/spaces/
+  const SPACE_IMAGE_PRESETS: Record<string, string> = {
+    'auditorio': '/spaces/Auditorio.jpg',
+    'sputnik': '/spaces/Sputnik.jpg',
+    'spuknic': '/spaces/Sputnik.jpg',
+    'apolo': '/spaces/Apolo.jpg',
+    'artemis': '/spaces/Artemis.jpg',
+    'cosmos': '/spaces/Cosmos.jpg',
+    'sala blanca': '/spaces/Sala-blanca.jpg',
+    'sala azul': '/spaces/Sala-azul.jpg',
+    'sala amarilla a': '/spaces/Sala-amarilla-A.jpg',
+    'sala amarilla b': '/spaces/Sala-amarilla-B.jpg',
+    'sala verde a': '/spaces/Sala-verde-A.jpg',
+    'sala verde b': '/spaces/Sala-verde-B.jpg',
+  };
+
+  const normalizedKey = space.nombre.toLowerCase().trim();
+  const presetImage = SPACE_IMAGE_PRESETS[normalizedKey];
+
   // Resolución multi-formato de foto de la sala (Nombre slug o ID en .jpg, .png, .webp)
   const slug = space.nombre
     .toLowerCase()
@@ -74,6 +99,12 @@ export const SpaceCard: React.FC<SpaceCardProps> = ({
 
   const candidateUrls = space.imagen_url
     ? [space.imagen_url]
+    : presetImage
+    ? [
+        presetImage,
+        `/spaces/${slug}.jpg`,
+        `/spaces/${space.id}.jpg`
+      ]
     : [
         `/spaces/${slug}.jpg`,
         `/spaces/${slug}.png`,
@@ -83,7 +114,6 @@ export const SpaceCard: React.FC<SpaceCardProps> = ({
         `/spaces/${space.id}.webp`,
       ];
 
-  const [urlIndex, setUrlIndex] = useState<number>(0);
   const photoUrl = candidateUrls[urlIndex] || '';
 
   const handleImageError = () => {

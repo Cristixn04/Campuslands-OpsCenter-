@@ -14,7 +14,7 @@ Simplemente coloca tu imagen en esta carpeta (`frontend/public/spaces/`) con cua
 | Sala Oficial | Capacidad Oficial | Archivo por Nombre (Recomendado) | O Archivo por ID |
 | :--- | :--- | :--- | :--- |
 | **Auditorio** | 100 personas | `auditorio.jpg` (o `.png`, `.webp`) | `esp-01.jpg` |
-| **Spuknic** | 38 personas | `spuknic.jpg` | `esp-02.jpg` |
+| **Sputnik** | 38 personas | `Sputnik.jpg` (o `sputnik.jpg`) | `esp-02.jpg` |
 | **Apolo** | 34 personas | `apolo.jpg` | `esp-03.jpg` |
 | **Artemis** | 32 personas | `artemis.jpg` | `esp-04.jpg` |
 | **Cosmos** | 25 personas | `cosmos.jpg` | `esp-05.jpg` |
