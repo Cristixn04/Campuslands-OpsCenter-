@@ -1,0 +1,150 @@
+{
+  "espacios": [
+    {
+      "id": "esp-01",
+      "nombre": "Auditorio",
+      "tipo": "auditorio",
+      "capacidad": 100,
+      "ubicacion": "Edificio Central - Piso 1",
+      "estado": "disponible"
+    },
+    {
+      "id": "esp-02",
+      "nombre": "Spooki",
+      "tipo": "aula_magna",
+      "capacidad": 38,
+      "ubicacion": "Edificio A - Piso 2",
+      "estado": "disponible"
+    },
+    {
+      "id": "esp-03",
+      "nombre": "Apolo",
+      "tipo": "aula_tecnologica",
+      "capacidad": 34,
+      "ubicacion": "Edificio B - Piso 1",
+      "estado": "disponible"
+    },
+    {
+      "id": "esp-04",
+      "nombre": "Artemis",
+      "tipo": "aula_tecnologica",
+      "capacidad": 32,
+      "ubicacion": "Edificio B - Piso 2",
+      "estado": "disponible"
+    },
+    {
+      "id": "esp-05",
+      "nombre": "Cosmos",
+      "tipo": "aula_teorica",
+      "capacidad": 25,
+      "ubicacion": "Edificio A - Piso 1",
+      "estado": "disponible"
+    },
+    {
+      "id": "esp-06",
+      "nombre": "Skilab",
+      "tipo": "laboratorio_ia",
+      "capacidad": 20,
+      "ubicacion": "Edificio C - Piso 1",
+      "estado": "disponible"
+    },
+    {
+      "id": "esp-07",
+      "nombre": "Blanca",
+      "tipo": "sala_reuniones",
+      "capacidad": 12,
+      "ubicacion": "Zona Co-working - Piso 2",
+      "estado": "disponible"
+    },
+    {
+      "id": "esp-08",
+      "nombre": "Azul",
+      "tipo": "sala_reuniones",
+      "capacidad": 10,
+      "ubicacion": "Zona Co-working - Piso 2",
+      "estado": "disponible"
+    },
+    {
+      "id": "esp-09",
+      "nombre": "Amarilla 1",
+      "tipo": "cubículo",
+      "capacidad": 6,
+      "ubicacion": "Zona de Estudio - Ala Norte",
+      "estado": "disponible"
+    },
+    {
+      "id": "esp-10",
+      "nombre": "Amarilla 2",
+      "tipo": "cubículo",
+      "capacidad": 6,
+      "ubicacion": "Zona de Estudio - Ala Norte",
+      "estado": "disponible"
+    },
+    {
+      "id": "esp-11",
+      "nombre": "Verde 1",
+      "tipo": "cubículo",
+      "capacidad": 6,
+      "ubicacion": "Zona de Estudio - Ala Sur",
+      "estado": "disponible"
+    },
+    {
+      "id": "esp-12",
+      "nombre": "Verde 2",
+      "tipo": "cubículo",
+      "capacidad": 6,
+      "ubicacion": "Zona de Estudio - Ala Sur",
+      "estado": "disponible"
+    }
+  ],
+  "recursos": [
+    {
+      "id": "rec-01",
+      "nombre": "Proyector Láser Epson 4K",
+      "categoria": "audiovisual",
+      "serial": "EPS-4K-9012",
+      "estado": "disponible",
+      "ubicacion_actual": "Apolo"
+    },
+    {
+      "id": "rec-02",
+      "nombre": "Kit Micrófonos Inalámbricos Shure",
+      "categoria": "audio",
+      "serial": "SHU-MIC-3310",
+      "estado": "disponible",
+      "ubicacion_actual": "Auditorio"
+    },
+    {
+      "id": "rec-03",
+      "nombre": "Laptop Dell XPS Dev Lab",
+      "categoria": "computo",
+      "serial": "DELL-XPS-1502",
+      "estado": "disponible",
+      "ubicacion_actual": "Skilab"
+    },
+    {
+      "id": "rec-04",
+      "nombre": "Cámara Streaming PTZ Sony",
+      "categoria": "audiovisual",
+      "serial": "SNY-PTZ-8821",
+      "estado": "disponible",
+      "ubicacion_actual": "Spooki"
+    },
+    {
+      "id": "rec-05",
+      "nombre": "Router Cisco Gigabit Móvil",
+      "categoria": "redes",
+      "serial": "CIS-NET-4401",
+      "estado": "disponible",
+      "ubicacion_actual": "Almacén Central"
+    },
+    {
+      "id": "rec-06",
+      "nombre": "Switch de Red 24 Puertos PoE",
+      "categoria": "redes",
+      "serial": "NET-SW-2409",
+      "estado": "disponible",
+      "ubicacion_actual": "Skilab"
+    }
+  ]
+}

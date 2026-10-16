@@ -1,0 +1,71 @@
+services:
+  # Base de Datos PostgreSQL
+  db:
+    image: postgres:16-alpine
+    container_name: campuslands_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-campuslands_secret_2026}
+      POSTGRES_DB: ${POSTGRES_DB:-campuslands_db}
+    ports:
+      - "${POSTGRES_EXTERNAL_PORT:-5435}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-campuslands_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - campus_net
+
+  # Backend (FastAPI - Territorio Samuel)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: campuslands_backend
+    restart: unless-stopped
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-campuslands_secret_2026}@db:5432/${POSTGRES_DB:-campuslands_db}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - CAMPUS_LAT=${CAMPUS_LAT:-7.0653}
+      - CAMPUS_LON=${CAMPUS_LON:--73.0864}
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL:-}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - ./data:/app/data
+    networks:
+      - campus_net
+
+  # Frontend (Vite React + Tailwind - Territorio Cristian)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: campuslands_frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-5173}:5173"
+    environment:
+      - VITE_API_URL=${VITE_API_URL:-http://localhost:8000/api}
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - campus_net
+
+volumes:
+  pgdata:
+
+networks:
+  campus_net:
+    driver: bridge
