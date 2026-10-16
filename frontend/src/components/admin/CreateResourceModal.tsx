@@ -58,8 +58,8 @@ export const CreateResourceModal: React.FC<CreateResourceModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200">
-      <div className="glass-panel max-w-md w-full rounded-2xl p-6 relative border border-white/20 shadow-2xl animate-in zoom-in-95 duration-200 my-8">
+    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-in fade-in duration-200">
+      <div className="glass-panel max-w-md w-full rounded-2xl p-4 sm:p-6 relative border border-white/20 shadow-2xl animate-in zoom-in-95 duration-200 my-4 sm:my-8">
         <button
           onClick={onClose}
           disabled={isLoading}

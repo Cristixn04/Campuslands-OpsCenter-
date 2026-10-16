@@ -84,7 +84,7 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
   };
 
   return (
-    <div className="glass-panel rounded-2xl p-6 relative border border-white/10 shadow-2xl">
+    <div className="glass-panel rounded-2xl p-4 sm:p-6 relative border border-white/10 shadow-2xl">
       {onClose && (
         <button
           onClick={onClose}

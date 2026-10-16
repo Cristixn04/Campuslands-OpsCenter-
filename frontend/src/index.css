@@ -81,6 +81,21 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   background: rgba(84, 198, 170, 0.7);
 }
 
+/* Ocultar barra de desplazamiento manteniendo funcionalidad de scroll fluido en móvil */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Touch scroll momentum nativo en móviles */
+.touch-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
 /* Glassmorphism General de paneles */
 .glass-panel {
   background: rgba(8, 18, 38, 0.75);

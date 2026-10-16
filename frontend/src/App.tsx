@@ -231,7 +231,7 @@ export default function App() {
         />
 
         {/* Contenido Principal */}
-        <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-6">
+        <main className="flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 py-4 sm:py-6">
           {/* Banner de Feedback Global */}
           {feedback && (
             <div className={`mb-6 p-4 rounded-2xl border flex items-center justify-between gap-3 text-xs animate-in fade-in duration-200 ${
@@ -272,8 +272,8 @@ export default function App() {
           />
 
           {/* Navegación por Pestañas */}
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 mb-6 pb-2">
-            <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 border-b border-white/10 mb-6 pb-2">
+            <div className="flex items-center gap-2 overflow-x-auto scrollbar-none touch-scroll pb-1.5 sm:pb-0 max-w-full -mx-3.5 px-3.5 sm:mx-0 sm:px-0 sm:overflow-visible sm:flex-wrap">
               {[
                 { id: 'spaces', label: 'Espacios & Aforos', count: spaces.length, icon: Building2 },
                 { id: 'agenda', label: 'Agenda & Google Calendar', count: reservations.length, icon: Calendar },
@@ -286,7 +286,7 @@ export default function App() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id as any)}
-                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-xs transition-all ${
+                    className={`flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-medium text-xs whitespace-nowrap shrink-0 transition-all ${
                       isActive
                         ? 'bg-white/10 text-white font-semibold border border-white/15 shadow-sm'
                         : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
@@ -305,13 +305,13 @@ export default function App() {
             </div>
 
             {/* Botones de Acción Rápida */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
               {currentRole === 'admin' && activeTab === 'spaces' && (
                 <button
                   onClick={() => setIsCreateSpaceOpen(true)}
-                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-campus-purple to-pink-600 text-white shadow-lg shadow-purple-500/20 hover:opacity-95 transition active:scale-95"
+                  className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-campus-purple to-pink-600 text-white shadow-lg shadow-purple-500/20 hover:opacity-95 transition active:scale-95 whitespace-nowrap"
                 >
-                  <PlusCircle className="w-4 h-4" />
+                  <PlusCircle className="w-4 h-4 shrink-0" />
                   <span>+ Nueva Sala</span>
                 </button>
               )}
@@ -319,9 +319,9 @@ export default function App() {
               {currentRole === 'admin' && activeTab === 'resources' && (
                 <button
                   onClick={() => setIsCreateResourceOpen(true)}
-                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-campus-teal to-campus-blue text-white shadow-lg shadow-teal-500/20 hover:opacity-95 transition active:scale-95"
+                  className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-campus-teal to-campus-blue text-white shadow-lg shadow-teal-500/20 hover:opacity-95 transition active:scale-95 whitespace-nowrap"
                 >
-                  <PlusCircle className="w-4 h-4" />
+                  <PlusCircle className="w-4 h-4 shrink-0" />
                   <span>+ Nuevo Equipo</span>
                 </button>
               )}
@@ -331,9 +331,9 @@ export default function App() {
                   setPreselectedSpaceId('');
                   setIsModalOpen(true);
                 }}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-campus-teal to-campus-blue text-white shadow-lg shadow-campus-teal/20 hover:opacity-95 transition active:scale-95"
+                className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-campus-teal to-campus-blue text-white shadow-lg shadow-campus-teal/20 hover:opacity-95 transition active:scale-95 whitespace-nowrap"
               >
-                <PlusCircle className="w-4 h-4" />
+                <PlusCircle className="w-4 h-4 shrink-0" />
                 <span>Crear Reserva</span>
               </button>
             </div>
@@ -381,8 +381,8 @@ export default function App() {
 
         {/* Modal Emergente de Nueva Reserva */}
         {isModalOpen && (
-          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-            <div className="max-w-lg w-full animate-in zoom-in-95 duration-200 my-8">
+          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+            <div className="max-w-lg w-full animate-in zoom-in-95 duration-200 my-4 sm:my-8">
               <ReservationForm
                 spaces={spaces}
                 resources={resources}
@@ -413,7 +413,7 @@ export default function App() {
         />
 
       {/* Footer Cósmico Oficial */}
-      <footer className="border-t border-white/5 bg-black/40 py-6 px-6 mt-12 text-center text-xs text-slate-500 font-mono">
+      <footer className="border-t border-white/5 bg-black/40 py-6 px-3.5 sm:px-6 mt-12 text-center text-xs text-slate-500 font-mono">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
           <p>© 2026 CAMPUSLANDS // SISTEMA CENTRAL DE GESTIÓN OPERATIVA</p>
           <div className="flex items-center gap-4 text-slate-400">

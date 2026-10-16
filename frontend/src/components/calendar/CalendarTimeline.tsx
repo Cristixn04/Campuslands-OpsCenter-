@@ -304,53 +304,53 @@ export const CalendarTimeline: React.FC<CalendarTimelineProps> = ({
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Header Principal de Agenda & Métricas del Día */}
-      <div className="glass-panel rounded-2xl p-6 border border-white/10 relative overflow-hidden shadow-2xl">
+      <div className="glass-panel rounded-2xl p-4 sm:p-6 border border-white/10 relative overflow-hidden shadow-2xl">
         <div className="absolute top-0 right-0 w-80 h-80 bg-campus-teal/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
         <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-campus-purple/10 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="relative z-10 flex flex-wrap items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-campus-teal/20 via-campus-blue/20 to-campus-purple/20 border border-campus-teal/30 flex items-center justify-center shadow-lg shadow-campus-teal/10">
-              <Calendar className="w-6 h-6 text-campus-teal" />
+        <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 sm:gap-6">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-campus-teal/20 via-campus-blue/20 to-campus-purple/20 border border-campus-teal/30 flex items-center justify-center shadow-lg shadow-campus-teal/10 shrink-0">
+              <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-campus-teal" />
             </div>
             <div>
-              <div className="flex items-center gap-2.5">
-                <h2 className="text-xl font-bold tracking-tight text-white font-sans">
+              <div className="flex items-center gap-2 sm:gap-2.5">
+                <h2 className="text-lg sm:text-xl font-bold tracking-tight text-white font-sans">
                   Agenda Operativa & Timeline
                 </h2>
-                <span className="inline-flex items-center gap-1 text-[10px] font-mono uppercase px-2.5 py-0.5 rounded-full bg-campus-teal/10 text-campus-teal border border-campus-teal/25 font-semibold">
+                <span className="inline-flex items-center gap-1 text-[9.5px] sm:text-[10px] font-mono uppercase px-2 sm:px-2.5 py-0.5 rounded-full bg-campus-teal/10 text-campus-teal border border-campus-teal/25 font-semibold">
                   <Sparkles className="w-2.5 h-2.5" /> Google Sync
                 </span>
               </div>
-              <p className="text-xs text-slate-400 font-light mt-0.5">
+              <p className="text-[11px] sm:text-xs text-slate-400 font-light mt-0.5">
                 Sincronización en tiempo real con Google Calendar, iCalendar (.ICS) y cronograma de salas
               </p>
             </div>
           </div>
 
           {/* Métricas Rápidas */}
-          <div className="flex items-center gap-3">
-            <div className="glass-panel px-4 py-2 rounded-xl border border-white/5 flex items-center gap-3">
-              <div className="text-right">
-                <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Reservas</div>
-                <div className="text-base font-bold font-mono text-campus-teal">{stats.totalReservas}</div>
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <div className="glass-panel px-3 sm:px-4 py-2 rounded-xl border border-white/5 flex items-center justify-around sm:justify-end gap-2.5 sm:gap-3 w-full sm:w-auto">
+              <div className="text-center sm:text-right">
+                <div className="text-[9px] sm:text-[10px] font-mono text-slate-400 uppercase tracking-wider">Reservas</div>
+                <div className="text-sm sm:text-base font-bold font-mono text-campus-teal">{stats.totalReservas}</div>
               </div>
-              <div className="w-px h-8 bg-white/10" />
-              <div className="text-right">
-                <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Asistentes</div>
-                <div className="text-base font-bold font-mono text-campus-cyan">{stats.totalAsistentes}</div>
+              <div className="w-px h-7 sm:h-8 bg-white/10" />
+              <div className="text-center sm:text-right">
+                <div className="text-[9px] sm:text-[10px] font-mono text-slate-400 uppercase tracking-wider">Asistentes</div>
+                <div className="text-sm sm:text-base font-bold font-mono text-campus-cyan">{stats.totalAsistentes}</div>
               </div>
-              <div className="w-px h-8 bg-white/10" />
-              <div className="text-right">
-                <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Espacios</div>
-                <div className="text-base font-bold font-mono text-campus-purple">{stats.uniqueSpaces}</div>
+              <div className="w-px h-7 sm:h-8 bg-white/10" />
+              <div className="text-center sm:text-right">
+                <div className="text-[9px] sm:text-[10px] font-mono text-slate-400 uppercase tracking-wider">Espacios</div>
+                <div className="text-sm sm:text-base font-bold font-mono text-campus-purple">{stats.uniqueSpaces}</div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Barra de Control de Fecha & Filtros */}
-        <div className="mt-6 pt-5 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
+        <div className="mt-5 sm:mt-6 pt-4 sm:pt-5 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
           {/* Navegador de Fecha */}
           <div className="flex items-center flex-wrap gap-2">
             <div className="flex items-center bg-[#030712] backdrop-blur-md rounded-xl border border-white/20 p-1 shadow-inner">
@@ -500,8 +500,8 @@ export const CalendarTimeline: React.FC<CalendarTimelineProps> = ({
       </div>
 
       {/* Barra de Búsqueda y Filtro de Espacios */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-3 flex-1 min-w-[280px]">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 flex-1 w-full sm:w-auto sm:min-w-[280px]">
           {/* Buscador */}
           <div className="relative flex-1">
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -515,7 +515,7 @@ export const CalendarTimeline: React.FC<CalendarTimelineProps> = ({
           </div>
 
           {/* Filtro de Espacio */}
-          <div className="relative min-w-[190px]">
+          <div className="relative w-full sm:w-auto sm:min-w-[190px]">
             <Filter className="w-3.5 h-3.5 text-campus-teal absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <select
               value={filterSpaceId}
@@ -533,56 +533,62 @@ export const CalendarTimeline: React.FC<CalendarTimelineProps> = ({
         </div>
 
         {/* Indicador de Resultados */}
-        <div className="text-xs text-slate-400 font-mono">
+        <div className="text-xs text-slate-400 font-mono text-right">
           Mostrando <span className="text-campus-teal font-bold">{filteredReservas.length}</span> evento(s)
         </div>
       </div>
 
       {/* VISTA 1: TIMELINE DIARIO HORARIO (Grilla Horaria 07:00 a 21:00) */}
       {viewMode === 'timeline' && (
-        <div className="glass-morphism-card p-6 border border-white/10 space-y-6 shadow-2xl relative overflow-hidden">
+        <div className="glass-morphism-card p-4 sm:p-6 border border-white/10 space-y-4 sm:space-y-6 shadow-2xl relative overflow-hidden">
           {/* Header del Timeline */}
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4 border-b border-white/10 pb-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-campus-purple/20 border border-campus-purple/40 flex items-center justify-center text-purple-300 shadow-md">
-                <Clock className="w-5 h-5 text-campus-purple" />
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-campus-purple/20 border border-campus-purple/40 flex items-center justify-center text-purple-300 shadow-md shrink-0">
+                <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-campus-purple" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-white uppercase tracking-wider font-mono flex items-center gap-2">
+                <h3 className="text-sm sm:text-base font-bold text-white uppercase tracking-wider font-mono flex items-center gap-2">
                   Línea de Tiempo Horaria
-                  <span className="text-[10px] font-mono normal-case px-2.5 py-0.5 rounded-full bg-campus-teal/15 text-campus-teal border border-campus-teal/30 font-semibold">
+                  <span className="text-[9.5px] sm:text-[10px] font-mono normal-case px-2 sm:px-2.5 py-0.5 rounded-full bg-campus-teal/15 text-campus-teal border border-campus-teal/30 font-semibold">
                     07:00 — 21:00
                   </span>
                 </h3>
-                <p className="text-xs text-slate-400 mt-0.5 font-sans">
+                <p className="text-[11px] sm:text-xs text-slate-400 mt-0.5 font-sans">
                   Cronograma horizontal de disponibilidad y aforos por sala en Zenith Tower (Piso 6)
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2.5 flex-wrap">
+            <div className="flex items-center gap-2 sm:gap-2.5 flex-wrap w-full sm:w-auto justify-between sm:justify-end">
               {/* Filtro rápido: Todas vs Solo Ocupadas */}
               <button
                 type="button"
                 onClick={() => setOnlyOccupiedInTimeline(!onlyOccupiedInTimeline)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-mono font-medium border transition ${
+                className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-mono font-medium border transition ${
                   onlyOccupiedInTimeline
                     ? 'bg-campus-cyan/20 border-campus-cyan text-campus-cyan font-semibold'
                     : 'bg-white/5 border-white/10 text-slate-400 hover:text-white hover:bg-white/10'
                 }`}
               >
-                {onlyOccupiedInTimeline ? 'Mostrando sólo ocupadas' : `Ver todas las salas (${espacios.length})`}
+                {onlyOccupiedInTimeline ? 'Mostrando sólo ocupadas' : `Ver todas (${espacios.length})`}
               </button>
 
-              <span className="text-xs font-mono text-slate-300 bg-white/5 px-3 py-1.5 rounded-xl border border-white/10 font-semibold">
-                📅 {showAllDates ? 'Todas las reservas' : formatDateSpanish(selectedDate)}
+              <span className="text-[11px] sm:text-xs font-mono text-slate-300 bg-white/5 px-2.5 sm:px-3 py-1.5 rounded-xl border border-white/10 font-semibold">
+                📅 {showAllDates ? 'Todas' : formatDateSpanish(selectedDate)}
               </span>
             </div>
           </div>
 
+          {/* Banner indicador para móviles: Deslizar horizontalmente */}
+          <div className="flex sm:hidden items-center justify-between text-[11px] font-mono text-campus-teal bg-campus-teal/10 px-3 py-1.5 rounded-xl border border-campus-teal/20">
+            <span>↔ Desliza la grilla para ver las horas</span>
+            <span className="font-bold">07:00 - 21:00</span>
+          </div>
+
           {/* Tablero Horario con Rieles Horizontales */}
           <div className="relative bg-[#02050e]/95 rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto scrollbar-none touch-scroll">
               <div className="min-w-[980px]">
                 {/* Cabecera de Horas (07:00 a 21:00) */}
                 <div
@@ -879,13 +885,13 @@ export const CalendarTimeline: React.FC<CalendarTimelineProps> = ({
                   </div>
 
                   {/* Botones de Acción Elegantes: Sincronizar Google Calendar & Descargar .ICS */}
-                  <div className="pt-3 border-t border-white/10 flex flex-wrap items-center gap-2">
+                  <div className="pt-3 border-t border-white/10 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                     {/* Botón Google Calendar */}
                     <a
                       href={googleCalUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 min-w-[170px] flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-campus-teal/20 to-campus-blue/20 hover:from-campus-teal/30 hover:to-campus-blue/30 text-campus-teal hover:text-white border border-campus-teal/40 hover:border-campus-teal transition-all shadow-sm hover:shadow-campus-teal/20 group cursor-pointer"
+                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-campus-teal/20 to-campus-blue/20 hover:from-campus-teal/30 hover:to-campus-blue/30 text-campus-teal hover:text-white border border-campus-teal/40 hover:border-campus-teal transition-all shadow-sm hover:shadow-campus-teal/20 group cursor-pointer"
                       title="Sincronizar directamente con Google Calendar Web Intent"
                     >
                       <Calendar className="w-3.5 h-3.5 text-campus-teal group-hover:scale-110 transition-transform shrink-0" />
@@ -897,7 +903,7 @@ export const CalendarTimeline: React.FC<CalendarTimelineProps> = ({
                     <button
                       type="button"
                       onClick={() => downloadIcsFile(reserva, espacioNombre)}
-                      className="flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-campus-surface hover:bg-white/10 text-slate-200 hover:text-white border border-white/15 hover:border-campus-purple/50 transition-all shadow-sm hover:shadow-campus-purple/10 group cursor-pointer"
+                      className="w-full sm:w-auto flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-campus-surface hover:bg-white/10 text-slate-200 hover:text-white border border-white/15 hover:border-campus-purple/50 transition-all shadow-sm hover:shadow-campus-purple/10 group cursor-pointer"
                       title="Descargar archivo estándar .ICS compatible con Google Calendar, Apple Calendar y Outlook"
                     >
                       <Download className="w-3.5 h-3.5 text-campus-purple group-hover:scale-110 transition-transform shrink-0" />

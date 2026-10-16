@@ -79,6 +79,8 @@ export const SpaceCard: React.FC<SpaceCardProps> = ({
     'apolo': '/spaces/Apolo.jpg',
     'artemis': '/spaces/Artemis.jpg',
     'cosmos': '/spaces/Cosmos.jpg',
+    'skylab': '/spaces/Skylab.jpg',
+    'skilab': '/spaces/Skylab.jpg',
     'sala blanca': '/spaces/Sala-blanca.jpg',
     'sala azul': '/spaces/Sala-azul.jpg',
     'sala amarilla a': '/spaces/Sala-amarilla-A.jpg',
@@ -126,7 +128,7 @@ export const SpaceCard: React.FC<SpaceCardProps> = ({
 
   return (
     <div
-      className={`glass-morphism-card p-5 flex flex-col justify-between relative overflow-hidden group ${
+      className={`glass-morphism-card p-4 sm:p-5 flex flex-col justify-between relative overflow-hidden group ${
         isInhabilitado
           ? 'border-campus-danger/40 shadow-lg shadow-rose-950/30'
           : isOcupado
@@ -149,7 +151,7 @@ export const SpaceCard: React.FC<SpaceCardProps> = ({
         {/* Donde integrar fotos: guarda en /frontend/public/spaces/   */}
         {/* con el nombre de la sala (ej. auditorio.jpg, spooki.jpg)  */}
         {/* ========================================================= */}
-        <div className="relative h-44 w-full rounded-2xl overflow-hidden mb-4 bg-[#030611] border border-white/10 group/img shadow-inner">
+        <div className="relative h-40 sm:h-44 w-full rounded-2xl overflow-hidden mb-3.5 sm:mb-4 bg-[#030611] border border-white/10 group/img shadow-inner">
           {!imageError ? (
             <img
               src={photoUrl}
